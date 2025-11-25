@@ -41,6 +41,13 @@ export const tools = [
     category: "转换",
     component: "ColorConverter",
   },
+  {
+    id: "uuid-generator",
+    name: "UUID生成器",
+    description: "生成UUID v4，支持单个和批量生成",
+    category: "生成器",
+    component: "UuidGenerator",
+  },
 ];
 
-export const categories = ["全部", "格式化", "时间", "编码", "转换"];
+export const categories = ["全部", "格式化", "时间", "编码", "转换", "生成器"];

@@ -5,6 +5,7 @@ import QrCodeGenerator from "@/components/QrCodeGenerator";
 import Base64EncoderDecoder from "@/components/Base64EncoderDecoder";
 import HashGenerator from "@/components/HashGenerator";
 import ColorConverter from "@/components/ColorConverter";
+import UuidGenerator from "@/components/UuidGenerator";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -15,6 +16,7 @@ const componentMap = {
   Base64EncoderDecoder,
   HashGenerator,
   ColorConverter,
+  UuidGenerator,
 };
 
 export default async function ToolPage({ params }) {
