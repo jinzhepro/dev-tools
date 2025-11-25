@@ -28,6 +28,13 @@ export const tools = [
     component: "Base64EncoderDecoder",
   },
   {
+    id: "url-tool",
+    name: "URL编码",
+    description: "URL编码和解码工具",
+    category: "编码",
+    component: "UrlEncoderDecoder",
+  },
+  {
     id: "hash-generator",
     name: "Hash生成器",
     description: "生成MD5、SHA1、SHA256、SHA512哈希",

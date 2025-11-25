@@ -3,6 +3,7 @@ import JsonConverter from "@/components/JsonConverter";
 import TimestampGenerator from "@/components/TimestampGenerator";
 import QrCodeGenerator from "@/components/QrCodeGenerator";
 import Base64EncoderDecoder from "@/components/Base64EncoderDecoder";
+import UrlEncoderDecoder from "@/components/UrlEncoderDecoder";
 import HashGenerator from "@/components/HashGenerator";
 import ColorConverter from "@/components/ColorConverter";
 import UuidGenerator from "@/components/UuidGenerator";
@@ -16,6 +17,7 @@ const componentMap = {
   TimestampGenerator,
   QrCodeGenerator,
   Base64EncoderDecoder,
+  UrlEncoderDecoder,
   HashGenerator,
   ColorConverter,
   UuidGenerator,
