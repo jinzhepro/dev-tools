@@ -48,6 +48,29 @@ export const tools = [
     category: "生成器",
     component: "UuidGenerator",
   },
+  {
+    id: "ip-info-checker",
+    name: "IP地址查询",
+    description: "查询IP地址信息和地理位置",
+    category: "网络",
+    component: "IpInfoChecker",
+  },
+  {
+    id: "geocoder",
+    name: "地理编码查询",
+    description: "基于Nominatim的地址搜索和坐标查询工具",
+    category: "地理",
+    component: "Geocoder",
+  },
 ];
 
-export const categories = ["全部", "格式化", "时间", "编码", "转换", "生成器"];
+export const categories = [
+  "全部",
+  "格式化",
+  "时间",
+  "编码",
+  "转换",
+  "生成器",
+  "网络",
+  "地理",
+];

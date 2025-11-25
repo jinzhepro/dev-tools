@@ -6,6 +6,8 @@ import Base64EncoderDecoder from "@/components/Base64EncoderDecoder";
 import HashGenerator from "@/components/HashGenerator";
 import ColorConverter from "@/components/ColorConverter";
 import UuidGenerator from "@/components/UuidGenerator";
+import IpInfoChecker from "@/components/IpInfoChecker";
+import Geocoder from "@/components/Geocoder";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -17,6 +19,8 @@ const componentMap = {
   HashGenerator,
   ColorConverter,
   UuidGenerator,
+  IpInfoChecker,
+  Geocoder,
 };
 
 export default async function ToolPage({ params }) {
