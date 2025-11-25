@@ -59,7 +59,7 @@ export default function RootLayout({ children }) {
                 <span className="text-xs text-gray-400">MIT License</span>
                 <span className="text-xs text-gray-400">•</span>
                 <a
-                  href="https://github.com/username/repo-name"
+                  href="https://github.com/jinzhepro/dev-tools"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-xs text-gray-400 hover:text-gray-600 transition-colors flex items-center space-x-1"
