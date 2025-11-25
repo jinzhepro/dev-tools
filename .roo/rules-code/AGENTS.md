@@ -1,12 +1,14 @@
-# Project Coding Rules (Non-Obvious Only)
+# 项目编码规则 (非显而易见)
 
-- 所有客户端组件必须使用 `"use client"` 指令在文件顶部（React 19.2.0 要求）
-- 工具组件注册在 `src/data/tools.js` 中，组件名称必须与 `componentMap` 中键名完全匹配
-- 新工具必须同时更新 `tools.js` 中的数据结构并在 `src/app/[toolId]/page.js` 中添加导入
-- 使用 `jsx` 文件扩展名而非 `.jsx`，遵循 Next.js 16.0.4 约定
-- 字体导入必须使用 `next/font/google` 的 Geist 和 Geist_Mono，变量名必须为 `--font-geist-sans` 和 `--font-geist-mono`
-- Tailwind CSS v4 使用 `@theme inline` 配置，不使用传统的 `tailwind.config.js`
-- CSS 变量定义位置在 `src/app/globals.css` 的 `:root` 中
-- 中文字符串直接嵌入 JSX，无需额外的国际化配置
-- React Compiler 会自动优化组件，避免手动 `useMemo`/`useCallback` 除非性能测试证明必要
-- 错误处理使用 try/catch，在组件中设置 `error` 状态而非 throw Error
+- 组件映射模式：所有工具页面使用 `src/app/[toolId]/page.js` 中的 `componentMap` 动态加载组件，新工具必须：
+
+  1. 在 `src/data/tools.js` 中注册
+  2. 在 `componentMap` 中导入映射
+  3. 使用 `"use client"` 指令
+  4. 实现 `generateStaticParams` 返回
+
+- React 编译器已启用 (`reactCompiler: true`)，避免手动 memoization，依赖自动优化
+
+- 所有 React 组件文件必须使用 `.js` 扩展名而非 `.jsx`，路径别名 `@/*` 在 `jsconfig.json` 中配置
+
+- 组件错误处理模式：统一使用 `useState` 错误状态管理模式，错误显示格式为 `"转换失败：" + err.message`
