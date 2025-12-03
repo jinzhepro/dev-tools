@@ -3,15 +3,10 @@
 import { useState, useEffect } from "react";
 
 export default function TimestampGenerator() {
+  const [isClient, setIsClient] = useState(typeof window !== 'undefined');
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [isClient, setIsClient] = useState(false);
-
-  const updateTime = () => {
-    setCurrentTime(new Date());
-  };
 
   useEffect(() => {
-    setIsClient(true);
     updateTime();
     const interval = setInterval(updateTime, 1000);
     return () => clearInterval(interval);
