@@ -69,6 +69,13 @@ export const tools = [
     category: "网络",
     component: "Geocoder",
   },
+  {
+    id: "number-base-converter",
+    name: "进制转换",
+    description: "二进制、八进制、十进制、十六进制相互转换",
+    category: "转换",
+    component: "NumberBaseConverter",
+  },
 ];
 
 export const categories = ["全部", "编码/解码", "生成器", "转换", "网络"];
