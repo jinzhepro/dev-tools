@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -138,7 +138,7 @@ export default function ColorConverter() {
       : null;
   };
 
-  const convertColor = () => {
+  const convertColor = useCallback(() => {
     if (!input.trim()) {
       setError("请输入颜色值");
       setResults({});
@@ -186,13 +186,13 @@ export default function ColorConverter() {
       setError(err.message);
       setResults({});
     }
-  };
+  }, [input, inputType]);
 
   useEffect(() => {
     if (input) {
       convertColor();
     }
-  }, [input, inputType]);
+  }, [input, inputType, convertColor]);
 
   const copyToClipboard = (text, label) => {
     navigator.clipboard.writeText(text);

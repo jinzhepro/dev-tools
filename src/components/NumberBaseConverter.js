@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -32,19 +32,35 @@ export default function NumberBaseConverter() {
   const [results, setResults] = useState({});
   const [error, setError] = useState("");
 
-  // 验证输入是否符合指定进制
-  const validateInput = (value, base) => {
-    if (!value.trim()) return false;
+  // 获取进制名称
+  const getBaseName = (base) => {
+    switch (base) {
+      case 2:
+        return "二进制";
+      case 8:
+        return "八进制";
+      case 10:
+        return "十进制";
+      case 16:
+        return "十六进制";
+      default:
+        return "";
+    }
+  };
 
-    try {
-      const parsedValue = parseInt(value, parseInt(base));
-      if (isNaN(parsedValue)) return false;
-
-      const validChars = getValidChars(parseInt(base));
-      const regex = new RegExp(`^[${validChars}]+$`, "i");
-      return regex.test(value);
-    } catch (e) {
-      return false;
+  // 获取进制示例
+  const getBaseExample = (base) => {
+    switch (base) {
+      case 2:
+        return "1010";
+      case 8:
+        return "12";
+      case 10:
+        return "10";
+      case 16:
+        return "A";
+      default:
+        return "";
     }
   };
 
@@ -64,8 +80,24 @@ export default function NumberBaseConverter() {
     }
   };
 
+  // 验证输入是否符合指定进制
+  const validateInput = useCallback((value, base) => {
+    if (!value.trim()) return false;
+
+    try {
+      const parsedValue = parseInt(value, parseInt(base));
+      if (isNaN(parsedValue)) return false;
+
+      const validChars = getValidChars(parseInt(base));
+      const regex = new RegExp(`^[${validChars}]+$`, "i");
+      return regex.test(value);
+    } catch (e) {
+      return false;
+    }
+  }, []);
+
   // 进制转换
-  const convertNumber = () => {
+  const convertNumber = useCallback(() => {
     if (!input.trim()) {
       setError("请输入数值");
       setResults({});
@@ -104,39 +136,7 @@ export default function NumberBaseConverter() {
       setError("转换失败：" + err.message);
       setResults({});
     }
-  };
-
-  // 获取进制名称
-  const getBaseName = (base) => {
-    switch (base) {
-      case 2:
-        return "二进制";
-      case 8:
-        return "八进制";
-      case 10:
-        return "十进制";
-      case 16:
-        return "十六进制";
-      default:
-        return "";
-    }
-  };
-
-  // 获取进制示例
-  const getBaseExample = (base) => {
-    switch (base) {
-      case 2:
-        return "1010";
-      case 8:
-        return "12";
-      case 10:
-        return "10";
-      case 16:
-        return "A";
-      default:
-        return "";
-    }
-  };
+  }, [input, inputBase, validateInput]);
 
   // 复制到剪贴板
   const copyToClipboard = (text, label) => {
@@ -165,7 +165,7 @@ export default function NumberBaseConverter() {
       }
     }, 100);
     return () => clearTimeout(timer);
-  }, [input, inputBase]);
+  }, [input, inputBase, convertNumber]);
 
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-6">
