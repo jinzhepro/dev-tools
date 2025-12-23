@@ -19,14 +19,7 @@ This file provides guidance to agents when working with code in this repository.
 
 ## 错误处理约定
 
-组件统一使用 `useState` 错误状态管理模式，错误显示在红色警告框中，格式为 `"转换失败：" + err.message`。
-
-## 构建命令
-
-- `npm run dev`: Next.js 开发服务器
-- `npm run build`: 生产构建 (启用静态生成)
-- `npm run start`: 启动生产服务器
-- `npm run lint`: ESLint 检查 (基于 eslint-config-next)
+组件统一使用 `useState` 错误状态管理模式，错误显示格式为 `"转换失败：" + err.message`。
 
 ## 开发模式要求
 
