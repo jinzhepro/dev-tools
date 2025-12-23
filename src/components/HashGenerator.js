@@ -112,36 +112,7 @@ export default function HashGenerator() {
     toast.success(`已复制${algorithm}到剪贴板`);
   };
 
-  const exampleTexts = [
-    {
-      label: "Hello World",
-      text: "Hello World",
-      icon: FileText,
-      color: "text-blue-500",
-      bgColor: "bg-blue-50",
-    },
-    {
-      label: "密码示例",
-      text: "MySecurePassword123!",
-      icon: Lock,
-      color: "text-red-500",
-      bgColor: "bg-red-50",
-    },
-    {
-      label: "邮箱地址",
-      text: "user@example.com",
-      icon: Key,
-      color: "text-green-500",
-      bgColor: "bg-green-50",
-    },
-    {
-      label: "JSON数据",
-      text: '{"user":"admin","pass":"secret"}',
-      icon: Hash,
-      color: "text-purple-500",
-      bgColor: "bg-purple-50",
-    },
-  ];
+
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl space-y-8">
@@ -157,38 +128,20 @@ export default function HashGenerator() {
         </CardHeader>
       </Card>
 
-      {/* 主要输入区域 */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* 输入卡片 */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <FileText className="w-5 h-5" />
-              输入文本
-            </CardTitle>
-            <CardDescription>输入要生成哈希的文本</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Textarea
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="输入要生成哈希的文本..."
-              className="min-h-32 resize-none"
-            />
-          </CardContent>
-        </Card>
-
-        {/* 哈希算法选择 */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Shield className="w-5 h-5" />
-              选择算法
-            </CardTitle>
-            <CardDescription>选择要生成的哈希算法</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
+      {/* 主要工作区域 - 整合输入、控制、输出 */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <FileText className="w-5 h-5" />
+            Hash生成工作台
+          </CardTitle>
+          <CardDescription>输入文本，选择算法，立即生成哈希值</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {/* 算法选择 - 置顶 */}
+          <div className="space-y-3">
+            <Label className="text-sm font-medium">选择哈希算法</Label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {algorithms.map((algo) => (
                 <div key={algo.name} className="flex items-start space-x-3">
                   <Checkbox
@@ -218,116 +171,92 @@ export default function HashGenerator() {
                 </div>
               ))}
             </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* 示例文本 */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <FileText className="w-5 h-5" />
-            示例文本
-          </CardTitle>
-          <CardDescription>点击快速填充示例文本</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-            {exampleTexts.map((example, index) => (
-              <Button
-                key={index}
-                variant="outline"
-                onClick={() => setInput(example.text)}
-                className="h-auto p-4 flex flex-col items-center gap-2 hover:bg-accent"
-              >
-                <div className={`p-2 rounded-lg ${example.bgColor}`}>
-                  <example.icon className={`w-5 h-5 ${example.color}`} />
-                </div>
-                <span className="text-sm font-medium">{example.label}</span>
-              </Button>
-            ))}
           </div>
+
+          {/* 输入区域 */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <Label className="text-sm font-medium">输入文本</Label>
+
+            </div>
+            <Textarea
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="输入要生成哈希的文本..."
+              className="min-h-32 resize-none"
+            />
+          </div>
+
+          {/* 操作按钮 */}
+          <div className="flex flex-wrap gap-3 justify-center">
+            <Button onClick={generateHashes} size="lg" className="gap-2">
+              <Shield className="w-4 h-4" />
+              生成哈希
+            </Button>
+            <Button
+              variant="outline"
+              onClick={clearAll}
+              size="lg"
+              className="gap-2"
+            >
+              <Trash2 className="w-4 h-4" />
+              清空
+            </Button>
+          </div>
+
+          {/* 结果显示 */}
+          {Object.keys(results).length > 0 && (
+            <div className="space-y-4">
+              <Label className="text-sm font-medium">哈希结果</Label>
+              <div className="space-y-3">
+                {Object.entries(results).map(([algorithm, hash]) => {
+                  const algoInfo = algorithms.find((a) => a.name === algorithm);
+                  return (
+                    <Card key={algorithm} className="border">
+                      <CardContent className="p-4">
+                        <div className="flex items-center justify-between mb-3">
+                          <div className="flex items-center gap-2">
+                            <div className={`p-2 rounded-lg ${algoInfo.bgColor}`}>
+                              <Shield className={`w-4 h-4 ${algoInfo.color}`} />
+                            </div>
+                            <div>
+                              <div className="font-medium">{algorithm}</div>
+                              <div className="text-sm text-muted-foreground">
+                                {algoInfo.description}
+                              </div>
+                            </div>
+                          </div>
+                          <Badge
+                            variant="secondary"
+                            className={algoInfo.badgeColor}
+                          >
+                            {algorithm}
+                          </Badge>
+                        </div>
+                        <div className="bg-muted/50 p-3 rounded-lg mb-3">
+                          <code className="font-mono text-sm break-all">
+                            {hash}
+                          </code>
+                        </div>
+                        <Button
+                          variant="outline"
+                          onClick={() => copyToClipboard(hash, algorithm)}
+                          className="w-full gap-2"
+                        >
+                          <Copy className="w-4 h-4" />
+                          复制{algorithm}
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
 
-      {/* 操作按钮 */}
-      <div className="flex flex-wrap gap-4 justify-center">
-        <Button onClick={generateHashes} size="lg" className="gap-2">
-          <Shield className="w-4 h-4" />
-          生成哈希
-        </Button>
-        <Button
-          variant="outline"
-          onClick={clearAll}
-          size="lg"
-          className="gap-2"
-        >
-          <Trash2 className="w-4 h-4" />
-          清空
-        </Button>
-      </div>
 
-      {/* 结果显示 */}
-      {Object.keys(results).length > 0 && (
-        <div className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Hash className="w-5 h-5" />
-                哈希结果
-              </CardTitle>
-              <CardDescription>生成的哈希值</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {Object.entries(results).map(([algorithm, hash]) => {
-                const algoInfo = algorithms.find((a) => a.name === algorithm);
-                return (
-                  <Card key={algorithm} className="border">
-                    <CardHeader className="pb-3">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <div className={`p-2 rounded-lg ${algoInfo.bgColor}`}>
-                            <Shield className={`w-4 h-4 ${algoInfo.color}`} />
-                          </div>
-                          <div>
-                            <CardTitle className="text-lg">
-                              {algorithm}
-                            </CardTitle>
-                            <CardDescription className="text-sm">
-                              {algoInfo.description}
-                            </CardDescription>
-                          </div>
-                        </div>
-                        <Badge
-                          variant="secondary"
-                          className={algoInfo.badgeColor}
-                        >
-                          {algorithm}
-                        </Badge>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="space-y-3">
-                      <div className="bg-muted/50 p-4 rounded-xl">
-                        <code className="font-mono text-sm break-all">
-                          {hash}
-                        </code>
-                      </div>
-                      <Button
-                        variant="outline"
-                        onClick={() => copyToClipboard(hash, algorithm)}
-                        className="w-full gap-2"
-                      >
-                        <Copy className="w-4 h-4" />
-                        复制{algorithm}
-                      </Button>
-                    </CardContent>
-                  </Card>
-                );
-              })}
-            </CardContent>
-          </Card>
-        </div>
-      )}
 
       {/* 使用说明 */}
       <Card>

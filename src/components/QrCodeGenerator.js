@@ -11,6 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -77,13 +78,7 @@ export default function QrCodeGenerator() {
     }
   };
 
-  const exampleUrls = [
-    { label: "百度", url: "https://www.baidu.com", icon: Globe },
-    { label: "GitHub", url: "https://github.com", icon: Github },
-    { label: "微信", url: "https://weixin.qq.com", icon: MessageCircle },
-    { label: "淘宝", url: "https://www.taobao.com", icon: ShoppingBag },
-  ];
-
+  
   const sizeOptions = [
     { value: "128", label: "小 (128x128)" },
     { value: "256", label: "中 (256x256)" },
@@ -91,132 +86,129 @@ export default function QrCodeGenerator() {
   ];
 
   return (
-    <div className="max-w-4xl mx-auto p-6 space-y-6">
+    <div className="container mx-auto px-4 py-8 max-w-6xl space-y-8">
       {/* 标题区域 */}
-      <Card>
-        <CardHeader className="text-center">
-          <CardTitle className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+      <Card className="border-0 shadow-none bg-transparent">
+        <CardHeader className="text-center px-0">
+          <CardTitle className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
             二维码生成器
           </CardTitle>
-          <CardDescription>将链接或文本转换为二维码</CardDescription>
+          <CardDescription className="text-lg">
+            将链接或文本转换为二维码
+          </CardDescription>
         </CardHeader>
       </Card>
 
-      {/* 主要内容区域 */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* 输入卡片 */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <QrCode className="w-5 h-5" />
-              输入内容
-            </CardTitle>
-            <CardDescription>输入要生成二维码的文本或链接</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <Textarea
-              value={text}
-              onChange={handleTextChange}
-              placeholder="输入链接或文本..."
-              className="min-h-32 resize-none"
-            />
-
-            <div className="space-y-2">
-              <label className="text-sm font-medium">二维码大小</label>
-              <Select value={size} onValueChange={setSize}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {sizeOptions.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* 预览卡片 */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <QrCode className="w-5 h-5" />
-              二维码预览
-            </CardTitle>
-            <CardDescription>实时预览生成的二维码</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex justify-center items-center min-h-64">
-              {text && !error ? (
-                <div className="space-y-4">
-                  <QRCodeCanvas
-                    value={text}
-                    size={parseInt(size)}
-                    level="M"
-                    includeMargin={true}
-                    className="border border-gray-200 rounded-lg"
-                  />
-                  <Button onClick={downloadQR} className="w-full gap-2">
-                    <Download className="w-4 h-4" />
-                    下载二维码
-                  </Button>
-                </div>
-              ) : (
-                <div className="text-center text-muted-foreground">
-                  <QrCode className="w-16 h-16 mx-auto mb-4 opacity-50" />
-                  <p>输入内容后二维码将显示在这里</p>
-                </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* 示例链接 */}
+      {/* 主要工作区域 - 整合输入、控制、预览 */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Globe className="w-5 h-5" />
-            示例链接
+            <QrCode className="w-5 h-5" />
+            二维码生成工作台
           </CardTitle>
-          <CardDescription>点击快速填充示例链接</CardDescription>
+          <CardDescription>输入内容，设置大小，实时预览二维码</CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-            {exampleUrls.map((example, index) => (
-              <Button
-                key={index}
-                variant="outline"
-                onClick={() => setText(example.url)}
-                className="h-auto p-4 flex flex-col items-center gap-2 hover:bg-accent"
-              >
-                <example.icon className="w-6 h-6" />
-                <span className="text-sm">{example.label}</span>
-              </Button>
-            ))}
+        <CardContent className="space-y-6">
+          {/* 输入输出区域 */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* 输入区域 */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <Label className="text-sm font-medium">输入内容</Label>
+                <div className="flex gap-2">
+
+                </div>
+              </div>
+              <Textarea
+                value={text}
+                onChange={handleTextChange}
+                placeholder="输入链接或文本..."
+                className="min-h-32 resize-none"
+              />
+
+              {/* 大小设置 */}
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">二维码大小</Label>
+                <Select value={size} onValueChange={setSize}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {sizeOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            {/* 预览区域 */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <Label className="text-sm font-medium">二维码预览</Label>
+                {text && !error && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={downloadQR}
+                    className="gap-1"
+                  >
+                    <Download className="w-3 h-3" />
+                    下载
+                  </Button>
+                )}
+              </div>
+              <div className="flex justify-center items-center min-h-64 border-2 border-dashed border-muted rounded-lg">
+                {text && !error ? (
+                  <div className="space-y-4 p-4">
+                    <QRCodeCanvas
+                      value={text}
+                      size={parseInt(size)}
+                      level="M"
+                      includeMargin={true}
+                      className="border border-gray-200 rounded-lg"
+                    />
+                    <Button onClick={downloadQR} className="w-full gap-2">
+                      <Download className="w-4 h-4" />
+                      下载二维码
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="text-center text-muted-foreground p-8">
+                    <QrCode className="w-16 h-16 mx-auto mb-4 opacity-50" />
+                    <p>输入内容后二维码将显示在这里</p>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
+
+          {/* 操作按钮 */}
+          <div className="flex flex-wrap gap-3 justify-center">
+            <Button
+              variant="outline"
+              onClick={clearAll}
+              className="gap-2"
+            >
+              <Trash2 className="w-4 h-4" />
+              清空
+            </Button>
+          </div>
+
+          {/* 错误信息 */}
+          {error && (
+            <Alert variant="destructive">
+              <QrCode className="w-4 h-4" />
+              <AlertTitle>错误</AlertTitle>
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
         </CardContent>
       </Card>
 
-      {/* 错误信息 */}
-      {error && (
-        <Alert variant="destructive">
-          <QrCode className="w-4 h-4" />
-          <AlertTitle>错误</AlertTitle>
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      )}
-
-      {/* 操作按钮 */}
-      <div className="flex flex-wrap gap-4">
-        <Button variant="outline" onClick={clearAll} className="gap-2">
-          <Trash2 className="w-4 h-4" />
-          清空
-        </Button>
-      </div>
+      
 
       {/* 使用说明 */}
       <Card>
@@ -238,12 +230,12 @@ export default function QrCodeGenerator() {
               </ul>
             </div>
             <div className="space-y-2">
-              <h4 className="font-semibold">功能特性</h4>
+              <h4 className="font-semibold">使用场景</h4>
               <ul className="text-sm text-muted-foreground space-y-1">
-                <li>• 实时预览</li>
-                <li>• 可调节大小</li>
-                <li>• 高质量下载</li>
-                <li>• 错误容错</li>
+                <li>• 分享网站链接</li>
+                <li>• 添加WiFi网络</li>
+                <li>• 存储联系方式</li>
+                <li>• 产品信息展示</li>
               </ul>
             </div>
           </div>
@@ -252,7 +244,7 @@ export default function QrCodeGenerator() {
             <QrCode className="w-4 h-4" />
             <AlertTitle>提示</AlertTitle>
             <AlertDescription>
-              二维码支持多种内容格式，包括网址、文本、联系方式等。生成的二维码可以直接扫描使用。
+              二维码内容越长，生成的二维码越复杂。建议保持内容简洁以提高扫描成功率。
             </AlertDescription>
           </Alert>
         </CardContent>

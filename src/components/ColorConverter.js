@@ -199,57 +199,7 @@ export default function ColorConverter() {
     toast.success(`已复制${label}到剪贴板`);
   };
 
-  const exampleColors = [
-    {
-      name: "红色",
-      value: "#ff0000",
-      type: "hex",
-      color: "bg-red-500",
-    },
-    {
-      name: "蓝色",
-      value: "#0000ff",
-      type: "hex",
-      color: "bg-blue-500",
-    },
-    {
-      name: "绿色",
-      value: "#00ff00",
-      type: "hex",
-      color: "bg-green-500",
-    },
-    {
-      name: "白色",
-      value: "#ffffff",
-      type: "hex",
-      color: "bg-white border",
-    },
-    {
-      name: "黑色",
-      value: "#000000",
-      type: "hex",
-      color: "bg-black",
-    },
-    {
-      name: "RGB红色",
-      value: "rgb(255, 0, 0)",
-      type: "rgb",
-      color: "bg-red-500",
-    },
-    {
-      name: "RGBA半透红",
-      value: "rgba(255, 0, 0, 0.5)",
-      type: "rgb",
-      color: "bg-red-500/50",
-    },
-    {
-      name: "HSL蓝色",
-      value: "hsl(240, 100%, 50%)",
-      type: "hsl",
-      color: "bg-blue-500",
-    },
-  ];
-
+  
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl space-y-8">
       {/* 标题区域 */}
@@ -264,22 +214,61 @@ export default function ColorConverter() {
         </CardHeader>
       </Card>
 
-      {/* 主要输入区域 */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* 输入卡片 */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Palette className="w-5 h-5" />
-              输入颜色
-            </CardTitle>
-            <CardDescription>输入颜色值</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="color-input">颜色值</Label>
+      {/* 主要工作区域 - 整合输入、控制、预览 */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Palette className="w-5 h-5" />
+            颜色转换工作台
+          </CardTitle>
+          <CardDescription>输入颜色值，选择格式，实时查看转换结果</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {/* 输入格式选择 - 置顶 */}
+          <div className="space-y-3">
+            <Label className="text-sm font-medium">输入格式</Label>
+            <RadioGroup
+              value={inputType}
+              onValueChange={setInputType}
+              className="grid grid-cols-3 gap-3"
+            >
+              {[
+                { value: "hex", label: "HEX", example: "#ff0000" },
+                {
+                  value: "rgb",
+                  label: "RGB/RGBA",
+                  example: "rgb(255, 0, 0)",
+                },
+                { value: "hsl", label: "HSL", example: "hsl(0, 100%, 50%)" },
+              ].map((type) => (
+                <div key={type.value} className="relative">
+                  <RadioGroupItem
+                    value={type.value}
+                    id={`type-${type.value}`}
+                    className="peer sr-only"
+                  />
+                  <Label
+                    htmlFor={`type-${type.value}`}
+                    className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-3 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary cursor-pointer transition-all"
+                  >
+                    <span className="font-medium text-sm">{type.label}</span>
+                    <span className="text-xs text-muted-foreground">
+                      {type.example}
+                    </span>
+                  </Label>
+                </div>
+              ))}
+            </RadioGroup>
+          </div>
+
+          {/* 输入输出区域 */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* 输入区域 */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <Label className="text-sm font-medium">颜色值</Label>
+                              </div>
               <Input
-                id="color-input"
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
@@ -288,128 +277,35 @@ export default function ColorConverter() {
               />
             </div>
 
-            {/* 输入类型选择 */}
-            <div className="space-y-2">
-              <Label>输入格式</Label>
-              <RadioGroup
-                value={inputType}
-                onValueChange={setInputType}
-                className="grid grid-cols-3 gap-3"
+            {/* 预览区域 */}
+            <div className="space-y-3">
+              <Label className="text-sm font-medium">颜色预览</Label>
+              <div
+                className="flex justify-center items-center h-32 rounded-xl border-2 border-border"
+                style={{
+                  backgroundColor: results.hex || "#f3f4f6",
+                  opacity: results.rgbValues?.a || 1,
+                }}
               >
-                {[
-                  { value: "hex", label: "HEX", example: "#ff0000" },
-                  {
-                    value: "rgb",
-                    label: "RGB/RGBA",
-                    example: "rgb(255, 0, 0)",
-                  },
-                  { value: "hsl", label: "HSL", example: "hsl(0, 100%, 50%)" },
-                ].map((type) => (
-                  <div key={type.value} className="relative">
-                    <RadioGroupItem
-                      value={type.value}
-                      id={`type-${type.value}`}
-                      className="peer sr-only"
-                    />
-                    <Label
-                      htmlFor={`type-${type.value}`}
-                      className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-3 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary cursor-pointer transition-all"
-                    >
-                      <span className="font-medium text-sm">{type.label}</span>
-                      <span className="text-xs text-muted-foreground">
-                        {type.example}
-                      </span>
-                    </Label>
+                <div className="text-center">
+                  <Eye className="w-8 h-8 mb-2 mx-auto text-muted-foreground" />
+                  <div className="text-sm text-muted-foreground">
+                    {results.hex ? `HEX: ${results.hex}` : "输入颜色值查看预览"}
+                    {results.rgbValues?.a < 1 && (
+                      <div className="text-xs mt-1">
+                        Alpha: {results.rgbValues.a}
+                      </div>
+                    )}
                   </div>
-                ))}
-              </RadioGroup>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* 颜色预览 */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Eye className="w-5 h-5" />
-              颜色预览
-            </CardTitle>
-            <CardDescription>实时预览颜色</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div
-              className="flex justify-center items-center h-32 rounded-xl border-2 border-border"
-              style={{
-                backgroundColor: results.hex || "#f3f4f6",
-                opacity: results.rgbValues?.a || 1,
-              }}
-            >
-              <div className="text-center">
-                <Eye className="w-8 h-8 mb-2 mx-auto text-muted-foreground" />
-                <div className="text-sm text-muted-foreground">
-                  {results.hex ? `HEX: ${results.hex}` : "输入颜色值查看预览"}
-                  {results.rgbValues?.a < 1 && (
-                    <div className="text-xs mt-1">
-                      Alpha: {results.rgbValues.a}
-                    </div>
-                  )}
                 </div>
               </div>
             </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* 示例颜色 */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Palette className="w-5 h-5" />
-            示例颜色
-          </CardTitle>
-          <CardDescription>点击快速填充示例颜色</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
-            {exampleColors.map((color, index) => (
-              <Button
-                key={index}
-                variant="outline"
-                onClick={() => {
-                  setInput(color.value);
-                  setInputType(color.type);
-                }}
-                className="h-auto p-4 flex flex-col items-center gap-2 hover:bg-accent"
-              >
-                <div className={`w-8 h-8 rounded-lg ${color.color}`} />
-                <span className="text-sm font-medium">{color.name}</span>
-              </Button>
-            ))}
           </div>
-        </CardContent>
-      </Card>
 
-      {/* 错误信息 */}
-      {error && (
-        <Alert variant="destructive">
-          <Palette className="w-4 h-4" />
-          <AlertTitle>错误</AlertTitle>
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      )}
-
-      {/* 转换结果 */}
-      {Object.keys(results).length > 0 && !error && (
-        <div className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Hash className="w-5 h-5" />
-                转换结果
-              </CardTitle>
-              <CardDescription>各种格式的颜色值</CardDescription>
-            </CardHeader>
-            <CardContent>
+          {/* 转换结果 */}
+          {Object.keys(results).length > 0 && !error && (
+            <div className="space-y-4">
+              <Label className="text-sm font-medium">转换结果</Label>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {[
                   { key: "hex", label: "HEX", value: results.hex },
@@ -417,16 +313,12 @@ export default function ColorConverter() {
                   { key: "hsl", label: "HSL", value: results.hsl },
                 ].map((format) => (
                   <Card key={format.key} className="border">
-                    <CardHeader className="pb-3">
-                      <div className="flex items-center justify-between">
-                        <CardTitle className="text-lg">
-                          {format.label}
-                        </CardTitle>
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="font-medium">{format.label}</div>
                         <Badge variant="secondary">{format.label}</Badge>
                       </div>
-                    </CardHeader>
-                    <CardContent className="space-y-3">
-                      <div className="bg-muted/50 p-4 rounded-xl">
+                      <div className="bg-muted/50 p-3 rounded-lg mb-3">
                         <code className="font-mono text-sm break-all">
                           {format.value}
                         </code>
@@ -439,16 +331,27 @@ export default function ColorConverter() {
                         className="w-full gap-2"
                       >
                         <Copy className="w-4 h-4" />
-                        复制{format.label}
+                        复制
                       </Button>
                     </CardContent>
                   </Card>
                 ))}
               </div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
+            </div>
+          )}
+
+          {/* 错误信息 */}
+          {error && (
+            <Alert variant="destructive">
+              <Palette className="w-4 h-4" />
+              <AlertTitle>错误</AlertTitle>
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+        </CardContent>
+      </Card>
+
+      
 
       {/* 使用说明 */}
       <Card>

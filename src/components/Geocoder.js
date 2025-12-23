@@ -38,44 +38,7 @@ export default function Geocoder() {
   const [error, setError] = useState("");
   const [activeTab, setActiveTab] = useState("search");
 
-  // 示例地址
-  const exampleAddresses = [
-    {
-      label: "北京天安门",
-      query: "天安门,北京",
-      icon: MapPin,
-      color: "text-red-500",
-      bgColor: "bg-red-50",
-    },
-    {
-      label: "纽约时代广场",
-      query: "Times Square, New York",
-      icon: Globe,
-      color: "text-blue-500",
-      bgColor: "bg-blue-50",
-    },
-    {
-      label: "埃菲尔铁塔",
-      query: "Eiffel Tower, Paris",
-      icon: MapPin,
-      color: "text-purple-500",
-      bgColor: "bg-purple-50",
-    },
-    {
-      label: "长城",
-      query: "Great Wall, China",
-      icon: Navigation,
-      color: "text-green-500",
-      bgColor: "bg-green-50",
-    },
-    {
-      label: "故宫博物院",
-      query: "故宫博物院,北京",
-      icon: MapPin,
-      color: "text-orange-500",
-      bgColor: "bg-orange-50",
-    },
-  ];
+  
 
   // 地理编码搜索
   const searchGeocoding = async (query) => {
@@ -232,40 +195,41 @@ export default function Geocoder() {
         </CardHeader>
       </Card>
 
-      {/* 错误提示 */}
-      {error && (
-        <Alert variant="destructive">
-          <AlertCircle className="w-4 h-4" />
-          <AlertTitle>错误</AlertTitle>
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      )}
+      {/* 地理编码工作台 */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Globe className="w-5 h-5" />
+            地理编码工作台
+          </CardTitle>
+          <CardDescription>地址搜索和坐标反向查询，基于OpenStreetMap数据</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {/* 错误信息 */}
+          {error && (
+            <Alert variant="destructive">
+              <AlertCircle className="w-4 h-4" />
+              <AlertTitle>错误</AlertTitle>
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
 
-      {/* 标签页 */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-2 max-w-md mx-auto">
-          <TabsTrigger value="search" className="gap-2">
-            <Search className="w-4 h-4" />
-            地址搜索
-          </TabsTrigger>
-          <TabsTrigger value="reverse" className="gap-2">
-            <Navigation className="w-4 h-4" />
-            坐标查询
-          </TabsTrigger>
-        </TabsList>
-
-        {/* 地址搜索标签页 */}
-        <TabsContent value="search" className="space-y-6 mt-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Search className="w-5 h-5" />
+          {/* 操作选择标签页 */}
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="grid w-full grid-cols-2 max-w-md mx-auto">
+              <TabsTrigger value="search" className="gap-2">
+                <Search className="w-4 h-4" />
                 地址搜索
-              </CardTitle>
-              <CardDescription>输入地址、地名或地标进行搜索</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
+              </TabsTrigger>
+              <TabsTrigger value="reverse" className="gap-2">
+                <Navigation className="w-4 h-4" />
+                坐标查询
+              </TabsTrigger>
+            </TabsList>
+
+            {/* 地址搜索 */}
+            <TabsContent value="search" className="space-y-4 mt-4">
+              <div className="space-y-3">
                 <Input
                   type="text"
                   value={searchQuery}
@@ -273,97 +237,39 @@ export default function Geocoder() {
                   placeholder="输入地址、地名或地标..."
                   className="text-lg"
                 />
+                
+                
+
                 {loading && (
-                  <div className="text-center py-4">
-                    <div className="inline-flex items-center">
-                      <RefreshCw className="animate-spin w-5 h-5 mr-3 text-muted-foreground" />
-                      <span className="text-muted-foreground">搜索中...</span>
-                    </div>
+                  <div className="text-center py-2">
+                    <RefreshCw className="animate-spin w-4 h-4 mr-2 text-muted-foreground" />
+                    <span className="text-sm text-muted-foreground">搜索中...</span>
                   </div>
                 )}
               </div>
-            </CardContent>
-          </Card>
 
-          {/* 示例地址 */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <MapPin className="w-5 h-5" />
-                示例地址
-              </CardTitle>
-              <CardDescription>点击快速填充示例地址</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3">
-                {exampleAddresses.map((example, index) => (
-                  <Button
-                    key={index}
-                    variant="outline"
-                    onClick={() => setSearchQuery(example.query)}
-                    className="h-auto p-4 flex flex-col items-center gap-2 hover:bg-accent"
-                  >
-                    <div className={`p-2 rounded-lg ${example.bgColor}`}>
-                      <example.icon className={`w-5 h-5 ${example.color}`} />
-                    </div>
-                    <span className="text-sm font-medium">{example.label}</span>
-                  </Button>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* 搜索结果 */}
-          {searchResults.length > 0 && (
-            <div className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Search className="w-5 h-5" />
-                    搜索结果
-                  </CardTitle>
-                  <CardDescription>
+              {/* 搜索结果预览 */}
+              {searchResults.length > 0 && (
+                <div className="space-y-3">
+                  <div className="text-sm font-medium">
                     找到 {searchResults.length} 个结果
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {searchResults.map((result, index) => (
+                  </div>
+                  <div className="space-y-2 max-h-64 overflow-y-auto">
+                    {searchResults.slice(0, 3).map((result, index) => (
                       <Card key={index} className="border">
-                        <CardHeader className="pb-3">
-                          <div className="flex items-start justify-between">
-                            <div className="flex-1">
-                              <CardTitle className="text-lg mb-2">
-                                {formatAddress(result.address) ||
-                                  result.display_name}
-                              </CardTitle>
-                              <CardDescription className="text-sm line-clamp-2">
-                                {result.display_name}
-                              </CardDescription>
-                              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-3">
-                                <div className="flex items-center gap-2">
-                                  <Badge
-                                    variant="secondary"
-                                    className="bg-blue-100 text-blue-800"
-                                  >
-                                    {result.type}
-                                  </Badge>
-                                </div>
-                                <div className="text-sm text-muted-foreground">
-                                  重要性: {result.importance?.toFixed(2)}
-                                </div>
-                                <div className="text-sm text-muted-foreground">
-                                  纬度: {parseFloat(result.lat).toFixed(6)}
-                                </div>
-                                <div className="text-sm text-muted-foreground">
-                                  经度: {parseFloat(result.lon).toFixed(6)}
-                                </div>
-                              </div>
+                        <CardContent className="p-3">
+                          <div className="flex items-center justify-between mb-2">
+                            <div className="font-medium text-sm truncate flex-1 mr-2">
+                              {formatAddress(result.address) || result.display_name}
                             </div>
+                            <Badge variant="secondary" className="text-xs">
+                              {result.type}
+                            </Badge>
                           </div>
-                        </CardHeader>
-                        <CardContent>
-                          <div className="flex flex-wrap gap-2">
+                          <div className="text-xs text-muted-foreground mb-2">
+                            {parseFloat(result.lat).toFixed(6)}, {parseFloat(result.lon).toFixed(6)}
+                          </div>
+                          <div className="flex gap-1">
                             <Button
                               variant="outline"
                               size="sm"
@@ -373,25 +279,10 @@ export default function Geocoder() {
                                   "坐标"
                                 )
                               }
-                              className="gap-2"
+                              className="text-xs gap-1"
                             >
                               <Copy className="w-3 h-3" />
-                              复制坐标
-                            </Button>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() =>
-                                openInMap(
-                                  result.lat,
-                                  result.lon,
-                                  result.display_name
-                                )
-                              }
-                              className="gap-2"
-                            >
-                              <Map className="w-3 h-3" />
-                              地图查看
+                              复制
                             </Button>
                             <Button
                               variant="outline"
@@ -401,250 +292,107 @@ export default function Geocoder() {
                                 setReverseLon(result.lon);
                                 setActiveTab("reverse");
                               }}
-                              className="gap-2"
+                              className="text-xs gap-1"
                             >
                               <Navigation className="w-3 h-3" />
-                              反向查询
+                              反查
                             </Button>
                           </div>
                         </CardContent>
                       </Card>
                     ))}
+                    {searchResults.length > 3 && (
+                      <div className="text-xs text-muted-foreground text-center">
+                        还有 {searchResults.length - 3} 个结果...
+                      </div>
+                    )}
                   </div>
-                </CardContent>
-              </Card>
-            </div>
-          )}
-        </TabsContent>
+                </div>
+              )}
+            </TabsContent>
 
-        {/* 坐标查询标签页 */}
-        <TabsContent value="reverse" className="space-y-6 mt-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Navigation className="w-5 h-5" />
-                坐标反向查询
-              </CardTitle>
-              <CardDescription>输入经纬度查询详细地址信息</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* 坐标查询 */}
+            <TabsContent value="reverse" className="space-y-4 mt-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div className="space-y-2">
-                  <Label htmlFor="latitude">纬度 (-90 到 90)</Label>
+                  <Label className="text-sm">纬度 (-90 到 90)</Label>
                   <Input
-                    id="latitude"
                     type="number"
                     step="any"
                     value={reverseLat}
                     onChange={(e) => setReverseLat(e.target.value)}
                     placeholder="例: 39.9042"
-                    className="font-mono"
+                    className="font-mono text-sm"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="longitude">经度 (-180 到 180)</Label>
+                  <Label className="text-sm">经度 (-180 到 180)</Label>
                   <Input
-                    id="longitude"
                     type="number"
                     step="any"
                     value={reverseLon}
                     onChange={(e) => setReverseLon(e.target.value)}
                     placeholder="例: 116.4074"
-                    className="font-mono"
+                    className="font-mono text-sm"
                   />
                 </div>
               </div>
 
               {reverseLoading && (
-                <div className="text-center py-4">
-                  <div className="inline-flex items-center">
-                    <RefreshCw className="animate-spin w-5 h-5 mr-3 text-muted-foreground" />
-                    <span className="text-muted-foreground">查询中...</span>
-                  </div>
+                <div className="text-center py-2">
+                  <RefreshCw className="animate-spin w-4 h-4 mr-2 text-muted-foreground" />
+                  <span className="text-sm text-muted-foreground">查询中...</span>
                 </div>
               )}
-            </CardContent>
-          </Card>
 
-          {/* 反向查询结果 */}
-          {reverseResult && (
-            <Card>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center gap-2">
-                    <MapPin className="w-5 h-5" />
-                    地址信息
-                  </CardTitle>
-                  <Button
-                    variant="outline"
-                    onClick={() =>
-                      openInMap(
-                        reverseLat,
-                        reverseLon,
-                        reverseResult.display_name
-                      )
-                    }
-                    className="gap-2"
-                  >
-                    <Map className="w-4 h-4" />
-                    在地图中查看
-                  </Button>
+              {/* 反向查询结果预览 */}
+              {reverseResult && (
+                <div className="space-y-3">
+                  <div className="text-sm font-medium">地址信息</div>
+                  <Card className="border">
+                    <CardContent className="p-3">
+                      <div className="text-sm mb-2">
+                        {reverseResult.display_name}
+                      </div>
+                      <div className="text-xs text-muted-foreground mb-3">
+                        坐标: {reverseLat}, {reverseLon}
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() =>
+                            copyToClipboard(`${reverseLat}, ${reverseLon}`, "坐标")
+                          }
+                          className="text-xs gap-1"
+                        >
+                          <Copy className="w-3 h-3" />
+                          复制坐标
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() =>
+                            openInMap(
+                              reverseLat,
+                              reverseLon,
+                              reverseResult.display_name
+                            )
+                          }
+                          className="text-xs gap-1"
+                        >
+                          <Map className="w-3 h-3" />
+                          地图
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
                 </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <Card className="border">
-                  <CardContent className="p-4">
-                    <div className="font-medium text-muted-foreground mb-2">
-                      完整地址
-                    </div>
-                    <div className="text-foreground">
-                      {reverseResult.display_name}
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    {reverseResult.address && (
-                      <>
-                        {reverseResult.address.house_number && (
-                          <Card className="border">
-                            <CardContent className="p-3">
-                              <div className="text-sm font-medium text-muted-foreground">
-                                门牌号
-                              </div>
-                              <div className="text-sm font-semibold">
-                                {reverseResult.address.house_number}
-                              </div>
-                            </CardContent>
-                          </Card>
-                        )}
-                        {reverseResult.address.road && (
-                          <Card className="border">
-                            <CardContent className="p-3">
-                              <div className="text-sm font-medium text-muted-foreground">
-                                道路
-                              </div>
-                              <div className="text-sm font-semibold">
-                                {reverseResult.address.road}
-                              </div>
-                            </CardContent>
-                          </Card>
-                        )}
-                        {reverseResult.address.neighbourhood && (
-                          <Card className="border">
-                            <CardContent className="p-3">
-                              <div className="text-sm font-medium text-muted-foreground">
-                                街道
-                              </div>
-                              <div className="text-sm font-semibold">
-                                {reverseResult.address.neighbourhood}
-                              </div>
-                            </CardContent>
-                          </Card>
-                        )}
-                        {(reverseResult.address.city ||
-                          reverseResult.address.town ||
-                          reverseResult.address.village) && (
-                          <Card className="border">
-                            <CardContent className="p-3">
-                              <div className="text-sm font-medium text-muted-foreground">
-                                城市
-                              </div>
-                              <div className="text-sm font-semibold">
-                                {reverseResult.address.city ||
-                                  reverseResult.address.town ||
-                                  reverseResult.address.village}
-                              </div>
-                            </CardContent>
-                          </Card>
-                        )}
-                      </>
-                    )}
-                  </div>
-
-                  <div className="space-y-2">
-                    {reverseResult.address && (
-                      <>
-                        {reverseResult.address.state && (
-                          <Card className="border">
-                            <CardContent className="p-3">
-                              <div className="text-sm font-medium text-muted-foreground">
-                                州/省
-                              </div>
-                              <div className="text-sm font-semibold">
-                                {reverseResult.address.state}
-                              </div>
-                            </CardContent>
-                          </Card>
-                        )}
-                        {reverseResult.address.country && (
-                          <Card className="border">
-                            <CardContent className="p-3">
-                              <div className="text-sm font-medium text-muted-foreground">
-                                国家
-                              </div>
-                              <div className="text-sm font-semibold">
-                                {reverseResult.address.country}
-                              </div>
-                            </CardContent>
-                          </Card>
-                        )}
-                        {reverseResult.address.postcode && (
-                          <Card className="border">
-                            <CardContent className="p-3">
-                              <div className="text-sm font-medium text-muted-foreground">
-                                邮编
-                              </div>
-                              <div className="text-sm font-semibold">
-                                {reverseResult.address.postcode}
-                              </div>
-                            </CardContent>
-                          </Card>
-                        )}
-                      </>
-                    )}
-
-                    <Card className="border">
-                      <CardContent className="p-3">
-                        <div className="text-sm font-medium text-muted-foreground">
-                          坐标
-                        </div>
-                        <div className="text-sm font-semibold">
-                          {reverseLat}, {reverseLon}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
-                </div>
-
-                <div className="flex flex-wrap gap-2">
-                  <Button
-                    variant="outline"
-                    onClick={() =>
-                      copyToClipboard(`${reverseLat}, ${reverseLon}`, "坐标")
-                    }
-                    className="gap-2"
-                  >
-                    <Copy className="w-4 h-4" />
-                    复制坐标
-                  </Button>
-                  <Button
-                    variant="outline"
-                    onClick={() =>
-                      copyToClipboard(reverseResult.display_name, "地址")
-                    }
-                    className="gap-2"
-                  >
-                    <Copy className="w-4 h-4" />
-                    复制地址
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-        </TabsContent>
-      </Tabs>
+              )}
+            </TabsContent>
+          </Tabs>
+        </CardContent>
+      </Card>
 
       {/* 使用说明 */}
       <Card>

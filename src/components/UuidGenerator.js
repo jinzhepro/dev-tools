@@ -145,186 +145,189 @@ export default function UuidGenerator() {
         </Alert>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* 单个UUID生成 */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Key className="w-5 h-5" />
-              单个UUID
-            </CardTitle>
-            <CardDescription>生成单个UUID标识符</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <Button onClick={generateUuid} className="w-full gap-2" size="lg">
-              <RefreshCw className="w-4 h-4" />
-              生成UUID
-            </Button>
+      {/* UUID生成工作台 */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Key className="w-5 h-5" />
+            UUID生成工作台
+          </CardTitle>
+          <CardDescription>生成单个或批量UUID标识符</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {/* 操作选择 */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Card className="border">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Key className="w-4 h-4" />
+                  单个UUID
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <Button onClick={generateUuid} className="w-full gap-2">
+                  <RefreshCw className="w-4 h-4" />
+                  生成UUID
+                </Button>
 
-            {uuid && (
-              <div className="space-y-4">
-                <Card className="border">
-                  <CardHeader className="pb-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-muted-foreground">
-                        标准格式
-                      </span>
-                      <Badge variant="secondary">{getUuidVersion(uuid)}</Badge>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    <div className="bg-muted/50 p-4 rounded-xl">
+                {uuid && (
+                  <>
+                    <div className="bg-muted/50 p-3 rounded-lg">
                       <code className="font-mono text-sm break-all">
                         {uuid}
                       </code>
                     </div>
-                    <Button
-                      variant="outline"
-                      onClick={() => copyToClipboard(uuid, "UUID")}
-                      className="w-full gap-2"
-                    >
-                      <Copy className="w-4 h-4" />
-                      复制
-                    </Button>
-                  </CardContent>
-                </Card>
+                    <div className="grid grid-cols-2 gap-2">
+                      <Button
+                        variant="outline"
+                        onClick={() => copyToClipboard(uuid, "UUID")}
+                        className="gap-2"
+                      >
+                        <Copy className="w-3 h-3" />
+                        复制标准
+                      </Button>
+                      <Button
+                        variant="outline"
+                        onClick={() =>
+                          copyToClipboard(uuid.replace(/-/g, ""), "无连字符UUID")
+                        }
+                        className="gap-2"
+                      >
+                        <Copy className="w-3 h-3" />
+                        复制无连字符
+                      </Button>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground">
+                      <div>
+                        <span className="font-medium">版本:</span> {getUuidVersion(uuid)}
+                      </div>
+                      <div>
+                        <span className="font-medium">变体:</span> {getUuidVariant(uuid)}
+                      </div>
+                    </div>
+                  </>
+                )}
+              </CardContent>
+            </Card>
 
-                {/* UUID信息 */}
-                <div className="grid grid-cols-2 gap-3">
-                  <Card className="border">
-                    <CardContent className="p-3">
-                      <div className="text-xs font-medium text-muted-foreground mb-1">
-                        版本
-                      </div>
-                      <div className="text-sm font-semibold">
-                        {getUuidVersion(uuid)}
-                      </div>
-                    </CardContent>
-                  </Card>
-                  <Card className="border">
-                    <CardContent className="p-3">
-                      <div className="text-xs font-medium text-muted-foreground mb-1">
-                        变体
-                      </div>
-                      <div className="text-sm font-semibold">
-                        {getUuidVariant(uuid)}
-                      </div>
-                    </CardContent>
-                  </Card>
+            <Card className="border">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Layers className="w-4 h-4" />
+                  批量生成
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="space-y-2">
+                  <Label className="text-sm">数量 (1-100)</Label>
+                  <Input
+                    type="number"
+                    min="1"
+                    max="100"
+                    value={count}
+                    onChange={(e) => setCount(parseInt(e.target.value) || 1)}
+                    className="font-mono"
+                  />
                 </div>
 
-                {/* 无连字符格式 */}
-                <Card className="border">
-                  <CardHeader className="pb-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-muted-foreground">
-                        无连字符
-                      </span>
-                      <Badge variant="outline">32位</Badge>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    <div className="bg-muted/50 p-4 rounded-xl">
-                      <code className="font-mono text-sm break-all">
-                        {uuid.replace(/-/g, "")}
-                      </code>
-                    </div>
-                    <Button
-                      variant="outline"
-                      onClick={() =>
-                        copyToClipboard(uuid.replace(/-/g, ""), "无连字符UUID")
-                      }
-                      className="w-full gap-2"
-                    >
-                      <Copy className="w-4 h-4" />
-                      复制
-                    </Button>
-                  </CardContent>
-                </Card>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+                <Button
+                  onClick={generateBulkUuids}
+                  className="w-full gap-2"
+                >
+                  <Layers className="w-4 h-4" />
+                  批量生成 ({count}个)
+                </Button>
 
-        {/* 批量UUID生成 */}
+                {bulkUuids.length > 0 && (
+                  <>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium">
+                        已生成 {bulkUuids.length} 个
+                      </span>
+                      <Button
+                        variant="outline"
+                        onClick={copyAllUuids}
+                        size="sm"
+                        className="gap-2"
+                      >
+                        <Copy className="w-3 h-3" />
+                        复制全部
+                      </Button>
+                    </div>
+                    <div className="bg-muted/50 p-3 rounded-lg max-h-32 overflow-y-auto">
+                      <div className="space-y-1">
+                        {bulkUuids.slice(0, 3).map((uuidItem, index) => (
+                          <div
+                            key={index}
+                            className="font-mono text-xs break-all"
+                          >
+                            {uuidItem}
+                          </div>
+                        ))}
+                        {bulkUuids.length > 3 && (
+                          <div className="text-xs text-muted-foreground text-center">
+                            ...还有 {bulkUuids.length - 3} 个
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* 错误信息 */}
+          {error && (
+            <Alert variant="destructive">
+              <Hash className="w-4 h-4" />
+              <AlertTitle>错误</AlertTitle>
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* 批量结果详情 */}
+      {bulkUuids.length > 0 && (
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Layers className="w-5 h-5" />
-              批量生成
+              批量结果详情
             </CardTitle>
-            <CardDescription>一次生成多个UUID</CardDescription>
+            <CardDescription>查看和管理批量生成的UUID</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="count">生成数量 (1-100)</Label>
-              <Input
-                id="count"
-                type="number"
-                min="1"
-                max="100"
-                value={count}
-                onChange={(e) => setCount(parseInt(e.target.value) || 1)}
-                className="font-mono"
-              />
-            </div>
-
-            <Button
-              onClick={generateBulkUuids}
-              className="w-full gap-2"
-              size="lg"
-            >
-              <Layers className="w-4 h-4" />
-              批量生成 ({count}个)
-            </Button>
-
-            {bulkUuids.length > 0 && (
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-muted-foreground">
-                    批量结果 ({bulkUuids.length}个)
-                  </span>
-                  <Button
-                    variant="outline"
-                    onClick={copyAllUuids}
-                    size="sm"
-                    className="gap-2"
-                  >
-                    <Copy className="w-4 h-4" />
-                    复制全部
-                  </Button>
-                </div>
-                <Card className="border">
-                  <CardContent className="p-4">
-                    <div className="max-h-64 overflow-y-auto space-y-2">
-                      {bulkUuids.map((uuidItem, index) => (
-                        <div
-                          key={index}
-                          className="flex items-center justify-between group hover:bg-muted/50 rounded p-2 transition-colors"
-                        >
-                          <span className="flex-1 font-mono text-sm break-all mr-2">
-                            {uuidItem}
-                          </span>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() =>
-                              copyToClipboard(uuidItem, `UUID ${index + 1}`)
-                            }
-                            className="opacity-0 group-hover:opacity-100 h-7 w-7 p-0"
-                          >
-                            <Copy className="w-3 h-3" />
-                          </Button>
-                        </div>
-                      ))}
+          <CardContent>
+            <Card className="border">
+              <CardContent className="p-4">
+                <div className="max-h-64 overflow-y-auto space-y-2">
+                  {bulkUuids.map((uuidItem, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-between group hover:bg-muted/50 rounded p-2 transition-colors"
+                    >
+                      <span className="flex-1 font-mono text-sm break-all mr-2">
+                        {uuidItem}
+                      </span>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() =>
+                          copyToClipboard(uuidItem, `UUID ${index + 1}`)
+                        }
+                        className="opacity-0 group-hover:opacity-100 h-7 w-7 p-0"
+                      >
+                        <Copy className="w-3 h-3" />
+                      </Button>
                     </div>
-                  </CardContent>
-                </Card>
-              </div>
-            )}
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
           </CardContent>
         </Card>
-      </div>
+      )}
 
       {/* 操作按钮 */}
       <div className="flex flex-wrap gap-4 justify-center">

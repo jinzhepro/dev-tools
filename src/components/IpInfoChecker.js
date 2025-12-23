@@ -104,30 +104,7 @@ export default function IpInfoChecker() {
     toast.success(`已复制${label}到剪贴板`);
   };
 
-  // 获取示例IP
-  const exampleIps = [
-    {
-      label: "Google DNS",
-      ip: "8.8.8.8",
-      desc: "Google公共DNS",
-      color: "text-blue-500",
-      bgColor: "bg-blue-50",
-    },
-    {
-      label: "Cloudflare",
-      ip: "1.1.1.1",
-      desc: "Cloudflare公共DNS",
-      color: "text-orange-500",
-      bgColor: "bg-orange-50",
-    },
-    {
-      label: "百度",
-      ip: "180.76.76.76",
-      desc: "百度DNS",
-      color: "text-red-500",
-      bgColor: "bg-red-50",
-    },
-  ];
+  
 
   useEffect(() => {
     // 页面加载时自动获取当前IP信息
@@ -148,274 +125,155 @@ export default function IpInfoChecker() {
         </CardHeader>
       </Card>
 
-      {/* 错误提示 */}
-      {error && (
-        <Alert variant="destructive">
-          <AlertCircle className="w-4 h-4" />
-          <AlertTitle>错误</AlertTitle>
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      )}
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* 当前IP信息 */}
-        <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle className="flex items-center gap-2">
-                <Globe className="w-5 h-5" />
-                当前IP信息
-              </CardTitle>
-              <Button
-                onClick={fetchCurrentIpInfo}
-                disabled={loading}
-                variant="outline"
-                size="sm"
-                className="gap-2"
-              >
-                <RefreshCw
-                  className={`w-4 h-4 ${loading ? "animate-spin" : ""}`}
-                />
-                刷新
-              </Button>
-            </div>
-            <CardDescription>显示您当前的公网IP信息</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {currentIpInfo ? (
-              <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-3">
-                  <Card className="border">
-                    <CardContent className="p-3">
-                      <div className="text-xs font-medium text-muted-foreground mb-1">
-                        IP地址
-                      </div>
-                      <div className="font-mono text-sm font-semibold">
-                        {currentIpInfo.ip}
-                      </div>
-                    </CardContent>
-                  </Card>
-                  <Card className="border">
-                    <CardContent className="p-3">
-                      <div className="text-xs font-medium text-muted-foreground mb-1">
-                        国家/地区
-                      </div>
-                      <div className="text-sm font-semibold">
-                        {currentIpInfo.country_name || currentIpInfo.country}
-                      </div>
-                    </CardContent>
-                  </Card>
-                  <Card className="border">
-                    <CardContent className="p-3">
-                      <div className="text-xs font-medium text-muted-foreground mb-1">
-                        城市
-                      </div>
-                      <div className="text-sm font-semibold">
-                        {currentIpInfo.city}
-                      </div>
-                    </CardContent>
-                  </Card>
-                  <Card className="border">
-                    <CardContent className="p-3">
-                      <div className="text-xs font-medium text-muted-foreground mb-1">
-                        ISP
-                      </div>
-                      <div className="text-sm font-semibold">
-                        {currentIpInfo.org}
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-
-                <Card className="border">
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium text-muted-foreground">
-                        经纬度
-                      </span>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() =>
-                          copyToClipboard(
-                            `${currentIpInfo.latitude}, ${currentIpInfo.longitude}`,
-                            "经纬度"
-                          )
-                        }
-                        className="h-7 w-7 p-0"
-                      >
-                        <Copy className="w-3 h-3" />
-                      </Button>
-                    </div>
-                    <div className="font-mono text-sm">
-                      {currentIpInfo.latitude}, {currentIpInfo.longitude}
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <div className="grid grid-cols-2 gap-3">
-                  <Card className="border">
-                    <CardContent className="p-3">
-                      <div className="text-xs font-medium text-muted-foreground mb-1">
-                        时区
-                      </div>
-                      <div className="text-sm font-semibold">
-                        {currentIpInfo.timezone}
-                      </div>
-                    </CardContent>
-                  </Card>
-                  <Card className="border">
-                    <CardContent className="p-3">
-                      <div className="text-xs font-medium text-muted-foreground mb-1">
-                        邮编
-                      </div>
-                      <div className="text-sm font-semibold">
-                        {currentIpInfo.postal}
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-              </div>
-            ) : (
-              <div className="flex flex-col items-center justify-center py-8 text-center">
-                <Globe className="w-12 h-12 text-muted-foreground mb-3" />
-                <p className="text-muted-foreground">正在获取IP信息...</p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* IP搜索 */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Search className="w-5 h-5" />
-              查询指定IP
-            </CardTitle>
-            <CardDescription>输入IP地址查询详细信息</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Input
-                type="text"
-                value={searchIp}
-                onChange={(e) => setSearchIp(e.target.value)}
-                placeholder="输入IP地址，如：8.8.8.8"
-                className="font-mono"
-                onKeyPress={(e) => e.key === "Enter" && searchIpInfo()}
-              />
-            </div>
-
-            <Button
-              onClick={searchIpInfo}
-              disabled={loadingSearch || !searchIp.trim()}
-              className="w-full gap-2"
-            >
-              <Search
-                className={`w-4 h-4 ${loadingSearch ? "animate-spin" : ""}`}
-              />
-              {loadingSearch ? "查询中..." : "查询IP信息"}
-            </Button>
-
-            {searchedIpInfo && (
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-muted-foreground">
-                    查询结果
-                  </span>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() =>
-                      copyToClipboard(
-                        JSON.stringify(searchedIpInfo, null, 2),
-                        "JSON数据"
-                      )
-                    }
-                    className="gap-2"
-                  >
-                    <Copy className="w-3 h-3" />
-                    复制JSON
-                  </Button>
-                </div>
-
-                <Card className="border">
-                  <CardContent className="p-4">
-                    <div className="space-y-2 max-h-64 overflow-y-auto">
-                      {Object.entries(searchedIpInfo).map(
-                        ([key, value]) =>
-                          value && (
-                            <div
-                              key={key}
-                              className="flex items-center justify-between p-2 rounded hover:bg-muted/50 transition-colors"
-                            >
-                              <div className="flex-1">
-                                <span className="font-medium text-sm text-muted-foreground mr-2">
-                                  {key}:
-                                </span>
-                                <span className="text-sm">{String(value)}</span>
-                              </div>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() =>
-                                  copyToClipboard(String(value), key)
-                                }
-                                className="h-7 w-7 p-0"
-                              >
-                                <Copy className="w-3 h-3" />
-                              </Button>
-                            </div>
-                          )
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* 示例IP */}
+      {/* IP查询工作台 */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Globe className="w-5 h-5" />
-            示例IP地址
+            IP地址查询工作台
           </CardTitle>
-          <CardDescription>点击快速填充示例IP地址</CardDescription>
+          <CardDescription>查询当前IP信息或指定IP地址的详细信息</CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            {exampleIps.map((example, index) => (
-              <Button
-                key={index}
-                variant="outline"
-                onClick={() => {
-                  setSearchIp(example.ip);
-                  setSearchedIpInfo(null);
-                  setError("");
-                }}
-                className="h-auto p-4 flex flex-col items-center gap-2 hover:bg-accent"
-              >
-                <div className={`p-2 rounded-lg ${example.bgColor}`}>
-                  <Globe className={`w-5 h-5 ${example.color}`} />
+        <CardContent className="space-y-6">
+          {/* 错误信息 */}
+          {error && (
+            <Alert variant="destructive">
+              <AlertCircle className="w-4 h-4" />
+              <AlertTitle>错误</AlertTitle>
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+
+          {/* 查询控制区域 */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* 当前IP查询 */}
+            <Card className="border">
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <Globe className="w-4 h-4" />
+                    当前IP
+                  </CardTitle>
+                  <Button
+                    onClick={fetchCurrentIpInfo}
+                    disabled={loading}
+                    variant="outline"
+                    size="sm"
+                    className="gap-2"
+                  >
+                    <RefreshCw
+                      className={`w-3 h-3 ${loading ? "animate-spin" : ""}`}
+                    />
+                    刷新
+                  </Button>
                 </div>
-                <div className="text-center">
-                  <span className="text-sm font-medium">{example.label}</span>
-                  <div className="text-xs text-muted-foreground">
-                    {example.ip}
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {currentIpInfo ? (
+                  <>
+                    <div className="bg-muted/50 p-3 rounded-lg">
+                      <div className="font-mono text-sm text-center">
+                        {currentIpInfo.ip}
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      <div>
+                        <span className="text-muted-foreground">国家:</span> {currentIpInfo.country_name || currentIpInfo.country}
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground">城市:</span> {currentIpInfo.city}
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground">ISP:</span> {currentIpInfo.org}
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground">时区:</span> {currentIpInfo.timezone}
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <div className="text-center py-4">
+                    <Globe className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
+                    <p className="text-sm text-muted-foreground">正在获取IP信息...</p>
                   </div>
-                  <div className="text-xs text-muted-foreground">
-                    {example.desc}
+                )}
+              </CardContent>
+            </Card>
+
+            {/* 指定IP查询 */}
+            <Card className="border">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Search className="w-4 h-4" />
+                  指定IP查询
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <Input
+                  type="text"
+                  value={searchIp}
+                  onChange={(e) => setSearchIp(e.target.value)}
+                  placeholder="输入IP地址，如：8.8.8.8"
+                  className="font-mono text-sm"
+                  onKeyPress={(e) => e.key === "Enter" && searchIpInfo()}
+                />
+                <Button
+                  onClick={searchIpInfo}
+                  disabled={loadingSearch || !searchIp.trim()}
+                  className="w-full gap-2"
+                >
+                  <Search
+                    className={`w-4 h-4 ${loadingSearch ? "animate-spin" : ""}`}
+                  />
+                  {loadingSearch ? "查询中..." : "查询"}
+                </Button>
+
+                {searchedIpInfo && (
+                  <div className="bg-muted/50 p-3 rounded-lg">
+                    <div className="font-mono text-xs text-center">
+                      {searchedIpInfo.ip} - {searchedIpInfo.country_name || searchedIpInfo.country}
+                    </div>
                   </div>
-                </div>
-              </Button>
-            ))}
+                )}
+              </CardContent>
+            </Card>
           </div>
+
+          {/* 详细信息展示 */}
+          {(currentIpInfo || searchedIpInfo) && (
+            <div className="space-y-4">
+              <div className="text-sm font-medium">
+                {currentIpInfo ? "当前IP详细信息" : "查询结果详细信息"}
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                {(currentIpInfo || searchedIpInfo) && Object.entries(currentIpInfo || searchedIpInfo)
+                  .filter(([key]) => ['ip', 'country_name', 'country', 'city', 'org', 'latitude', 'longitude', 'timezone', 'postal'].includes(key))
+                  .map(([key, value]) => (
+                    <Card key={key} className="border">
+                      <CardContent className="p-3">
+                        <div className="text-xs font-medium text-muted-foreground mb-1">
+                          {key === 'ip' ? 'IP地址' :
+                           key === 'country_name' || key === 'country' ? '国家/地区' :
+                           key === 'org' ? 'ISP' :
+                           key === 'latitude' ? '纬度' :
+                           key === 'longitude' ? '经度' :
+                           key === 'timezone' ? '时区' :
+                           key === 'postal' ? '邮编' :
+                           key === 'city' ? '城市' : key}
+                        </div>
+                        <div className="text-sm font-semibold break-all">
+                          {String(value)}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
+
+      
 
       {/* 使用说明 */}
       <Card>

@@ -84,37 +84,7 @@ export default function Base64EncoderDecoder() {
     toast.success("已复制到剪贴板");
   };
 
-  const exampleTexts = [
-    {
-      label: "Hello World",
-      text: "Hello World",
-      icon: Globe,
-      color: "text-blue-500",
-      bgColor: "bg-blue-50",
-    },
-    {
-      label: "中文测试",
-      text: "你好，世界！这是一个中文测试。",
-      icon: FileText,
-      color: "text-green-500",
-      bgColor: "bg-green-50",
-    },
-    {
-      label: "JSON数据",
-      text: '{"name":"张三","age":25,"city":"北京"}',
-      icon: Code,
-      color: "text-purple-500",
-      bgColor: "bg-purple-50",
-    },
-    {
-      label: "特殊字符",
-      text: "Special chars: @#$%^&*()_+{}|:<>?[]\\;',./",
-      icon: Hash,
-      color: "text-orange-500",
-      bgColor: "bg-orange-50",
-    },
-  ];
-
+  
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl space-y-8">
       {/* 标题区域 */}
@@ -129,168 +99,132 @@ export default function Base64EncoderDecoder() {
         </CardHeader>
       </Card>
 
-      {/* 主要输入区域 */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* 输入卡片 */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <FileText className="w-5 h-5" />
-              输入内容
-            </CardTitle>
-            <CardDescription>输入要编码或解码的文本</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Textarea
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="输入要编码或解码的文本..."
-              className="min-h-40 resize-none"
-            />
-          </CardContent>
-        </Card>
-
-        {/* 输出卡片 */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Code className="w-5 h-5" />
-              输出结果
-            </CardTitle>
-            <CardDescription>处理后的结果</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Textarea
-              value={output}
-              readOnly
-              placeholder="处理结果将显示在这里..."
-              className="min-h-40 resize-none bg-muted/50 font-mono text-sm"
-            />
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* 操作选择 */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <RotateCcw className="w-5 h-5" />
-            操作类型
-          </CardTitle>
-          <CardDescription>选择要执行的操作</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <RadioGroup
-            value={operation}
-            onValueChange={setOperation}
-            className="grid grid-cols-1 md:grid-cols-2 gap-4"
-          >
-            <div className="relative">
-              <RadioGroupItem
-                value="encode"
-                id="encode"
-                className="peer sr-only"
-              />
-              <Label
-                htmlFor="encode"
-                className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary cursor-pointer transition-all"
-              >
-                <div className="flex items-center gap-2 mb-2">
-                  <Code className="w-5 h-5" />
-                  <span className="font-medium">编码为Base64</span>
-                </div>
-                <span className="text-sm text-muted-foreground text-center">
-                  将文本转换为Base64格式
-                </span>
-              </Label>
-            </div>
-            <div className="relative">
-              <RadioGroupItem
-                value="decode"
-                id="decode"
-                className="peer sr-only"
-              />
-              <Label
-                htmlFor="decode"
-                className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary cursor-pointer transition-all"
-              >
-                <div className="flex items-center gap-2 mb-2">
-                  <FileText className="w-5 h-5" />
-                  <span className="font-medium">从Base64解码</span>
-                </div>
-                <span className="text-sm text-muted-foreground text-center">
-                  将Base64格式还原为文本
-                </span>
-              </Label>
-            </div>
-          </RadioGroup>
-        </CardContent>
-      </Card>
-
-      {/* 示例文本 */}
+      {/* 主要工作区域 - 整合输入、控制、输出 */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <FileText className="w-5 h-5" />
-            示例文本
+            Base64转换工作台
           </CardTitle>
-          <CardDescription>点击快速填充示例文本</CardDescription>
+          <CardDescription>输入文本，选择操作类型，立即查看结果</CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-            {exampleTexts.map((example, index) => (
-              <Button
-                key={index}
-                variant="outline"
-                onClick={() => setInput(example.text)}
-                className="h-auto p-4 flex flex-col items-center gap-2 hover:bg-accent"
-              >
-                <div className={`p-2 rounded-lg ${example.bgColor}`}>
-                  <example.icon className={`w-5 h-5 ${example.color}`} />
-                </div>
-                <span className="text-sm font-medium">{example.label}</span>
-              </Button>
-            ))}
+        <CardContent className="space-y-6">
+          {/* 操作类型选择 - 置顶 */}
+          <div className="space-y-3">
+            <Label className="text-sm font-medium">操作类型</Label>
+            <RadioGroup
+              value={operation}
+              onValueChange={setOperation}
+              className="grid grid-cols-1 md:grid-cols-2 gap-4"
+            >
+              <div className="relative">
+                <RadioGroupItem
+                  value="encode"
+                  id="encode"
+                  className="peer sr-only"
+                />
+                <Label
+                  htmlFor="encode"
+                  className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary cursor-pointer transition-all"
+                >
+                  <div className="flex items-center gap-2 mb-2">
+                    <Code className="w-5 h-5" />
+                    <span className="font-medium">编码为Base64</span>
+                  </div>
+                  <span className="text-sm text-muted-foreground text-center">
+                    将文本转换为Base64格式
+                  </span>
+                </Label>
+              </div>
+              <div className="relative">
+                <RadioGroupItem
+                  value="decode"
+                  id="decode"
+                  className="peer sr-only"
+                />
+                <Label
+                  htmlFor="decode"
+                  className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary cursor-pointer transition-all"
+                >
+                  <div className="flex items-center gap-2 mb-2">
+                    <FileText className="w-5 h-5" />
+                    <span className="font-medium">从Base64解码</span>
+                  </div>
+                  <span className="text-sm text-muted-foreground text-center">
+                    将Base64格式还原为文本
+                  </span>
+                </Label>
+              </div>
+            </RadioGroup>
           </div>
+
+          {/* 输入输出区域 */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* 输入区域 */}
+            <div className="space-y-3">
+
+              <Textarea
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="输入要编码或解码的文本..."
+                className="min-h-48 resize-none"
+              />
+            </div>
+
+            {/* 输出区域 */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <Label className="text-sm font-medium">输出结果</Label>
+                {output && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={copyToClipboard}
+                    className="gap-1"
+                  >
+                    <Copy className="w-3 h-3" />
+                    复制
+                  </Button>
+                )}
+              </div>
+              <Textarea
+                value={output}
+                readOnly
+                placeholder="处理结果将显示在这里..."
+                className="min-h-48 resize-none bg-muted/50 font-mono text-sm"
+              />
+            </div>
+          </div>
+
+          {/* 操作按钮 */}
+          <div className="flex flex-wrap gap-3 justify-center">
+            <Button onClick={processText} size="lg" className="gap-2">
+              <RotateCcw className="w-4 h-4" />
+              {operation === "encode" ? "编码" : "解码"}
+            </Button>
+            <Button
+              variant="outline"
+              onClick={clearAll}
+              size="lg"
+              className="gap-2"
+            >
+              <Trash2 className="w-4 h-4" />
+              清空
+            </Button>
+          </div>
+
+          {/* 错误信息 */}
+          {error && (
+            <Alert variant="destructive">
+              <AlertCircle className="w-4 h-4" />
+              <AlertTitle>错误</AlertTitle>
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
         </CardContent>
       </Card>
 
-      {/* 错误信息 */}
-      {error && (
-        <Alert variant="destructive">
-          <AlertCircle className="w-4 h-4" />
-          <AlertTitle>错误</AlertTitle>
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      )}
 
-      {/* 操作按钮 */}
-      <div className="flex flex-wrap gap-4 justify-center">
-        <Button onClick={processText} size="lg" className="gap-2">
-          <RotateCcw className="w-4 h-4" />
-          {operation === "encode" ? "编码" : "解码"}
-        </Button>
-        <Button
-          variant="outline"
-          onClick={clearAll}
-          size="lg"
-          className="gap-2"
-        >
-          <Trash2 className="w-4 h-4" />
-          清空
-        </Button>
-        {output && (
-          <Button
-            variant="outline"
-            onClick={copyToClipboard}
-            size="lg"
-            className="gap-2"
-          >
-            <Copy className="w-4 h-4" />
-            复制结果
-          </Button>
-        )}
-      </div>
 
       {/* 使用说明 */}
       <Card>

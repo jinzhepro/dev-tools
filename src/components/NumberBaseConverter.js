@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
 import {
   Copy,
   AlertCircle,
@@ -23,6 +24,7 @@ import {
   Binary,
   Octagon,
   Hexagon,
+  Trash2,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -144,16 +146,7 @@ export default function NumberBaseConverter() {
     toast.success(`已复制 ${label} 到剪贴板`);
   };
 
-  // 示例数值
-  const exampleNumbers = [
-    { name: "十进制 10", value: "10", base: "10" },
-    { name: "十进制 255", value: "255", base: "10" },
-    { name: "十进制 1024", value: "1024", base: "10" },
-    { name: "二进制 1010", value: "1010", base: "2" },
-    { name: "八进制 12", value: "12", base: "8" },
-    { name: "十六进制 FF", value: "FF", base: "16" },
-    { name: "十六进制 100", value: "100", base: "16" },
-  ];
+
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -168,35 +161,34 @@ export default function NumberBaseConverter() {
   }, [input, inputBase, convertNumber]);
 
   return (
-    <div className="max-w-6xl mx-auto p-6 space-y-6">
+    <div className="container mx-auto px-4 py-8 max-w-6xl space-y-8">
       {/* 标题区域 */}
-      <Card>
-        <CardHeader className="text-center">
-          <CardTitle className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+      <Card className="border-0 shadow-none bg-transparent">
+        <CardHeader className="text-center px-0">
+          <CardTitle className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
             进制转换器
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-lg">
             二进制、八进制、十进制、十六进制相互转换
           </CardDescription>
         </CardHeader>
       </Card>
 
-      {/* 主要输入区域 */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* 输入卡片 */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Terminal className="w-5 h-5" />
-              输入数值
-            </CardTitle>
-            <CardDescription>输入要转换的数值</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
+{/* 进制转换工作台 */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Terminal className="w-5 h-5" />
+            进制转换工作台
+          </CardTitle>
+          <CardDescription>二进制、八进制、十进制、十六进制相互转换</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {/* 输入控制区域 */}
+          <div className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="number-input">数值</Label>
+              <Label className="text-sm font-medium">输入数值</Label>
               <Input
-                id="number-input"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="输入数值..."
@@ -204,28 +196,19 @@ export default function NumberBaseConverter() {
               />
             </div>
 
+            {/* 进制选择 */}
             <div className="space-y-2">
-              <Label>输入进制</Label>
+              <Label className="text-sm font-medium">输入进制</Label>
               <RadioGroup
                 value={inputBase}
                 onValueChange={setInputBase}
-                className="grid grid-cols-2 gap-3"
+                className="grid grid-cols-4 gap-2"
               >
                 {[
-                  {
-                    value: "2",
-                    label: "二进制",
-                    icon: Binary,
-                    example: "1010",
-                  },
-                  { value: "8", label: "八进制", icon: Octagon, example: "12" },
-                  { value: "10", label: "十进制", icon: Hash, example: "10" },
-                  {
-                    value: "16",
-                    label: "十六进制",
-                    icon: Hexagon,
-                    example: "A",
-                  },
+                  { value: "2", label: "二进制", example: "1010" },
+                  { value: "8", label: "八进制", example: "12" },
+                  { value: "10", label: "十进制", example: "10" },
+                  { value: "16", label: "十六进制", example: "A" },
                 ].map((base) => (
                   <div key={base.value} className="relative">
                     <RadioGroupItem
@@ -235,111 +218,95 @@ export default function NumberBaseConverter() {
                     />
                     <Label
                       htmlFor={`base-${base.value}`}
-                      className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary cursor-pointer transition-all"
+                      className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-3 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary cursor-pointer transition-all"
                     >
-                      <base.icon className="w-6 h-6 mb-2" />
-                      <span className="font-medium">{base.label}</span>
-                      <span className="text-xs text-muted-foreground mt-1">
-                        例: {base.example}
+                      <span className="font-medium text-sm">{base.label}</span>
+                      <span className="text-xs text-muted-foreground">
+                        {base.example}
                       </span>
                     </Label>
                   </div>
                 ))}
               </RadioGroup>
             </div>
-          </CardContent>
-        </Card>
 
-        {/* 结果预览卡片 */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Hash className="w-5 h-5" />
-              转换结果
-            </CardTitle>
-            <CardDescription>实时预览转换结果</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {error ? (
-              <Alert variant="destructive">
-                <AlertCircle className="w-4 h-4" />
-                <AlertTitle>错误</AlertTitle>
-                <AlertDescription>{error}</AlertDescription>
-              </Alert>
-            ) : Object.keys(results).length > 0 ? (
-              <div className="space-y-2">
-                {[
-                  { key: "binary", label: "二进制", icon: Binary },
-                  { key: "octal", label: "八进制", icon: Octagon },
-                  { key: "decimal", label: "十进制", icon: Hash },
-                  { key: "hexadecimal", label: "十六进制", icon: Hexagon },
-                ].map((format) => (
-                  <div
-                    key={format.key}
-                    className="flex items-center justify-between p-3 rounded-lg border bg-muted/50"
-                  >
-                    <div className="flex items-center gap-2">
-                      <format.icon className="w-4 h-4 text-muted-foreground" />
-                      <span className="font-medium text-sm">
-                        {format.label}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <code className="font-mono text-sm font-semibold">
-                        {results[format.key]}
-                      </code>
+            
+          </div>
+
+          {/* 转换结果 */}
+          {Object.keys(results).length > 0 && (
+            <div className="space-y-4">
+              <div className="text-sm font-medium">转换结果</div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {Object.entries(results).map(([base, value]) => (
+                  <Card key={base} className="border">
+                    <CardContent className="p-3">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="font-medium text-sm">
+                          {getBaseName(base)}
+                        </div>
+                        <Badge variant="secondary" className="text-xs">
+                          {base}进制
+                        </Badge>
+                      </div>
+                      <div className="bg-muted/50 p-2 rounded mb-2">
+                        <code className="font-mono text-xs break-all">
+                          {value}
+                        </code>
+                      </div>
                       <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() =>
-                          copyToClipboard(results[format.key], format.label)
-                        }
-                        className="h-7 w-7 p-0"
+                        variant="outline"
+                        onClick={() => copyToClipboard(value, `${base}进制`)}
+                        className="w-full gap-2 text-xs"
                       >
                         <Copy className="w-3 h-3" />
+                        复制
                       </Button>
-                    </div>
-                  </div>
+                    </CardContent>
+                  </Card>
                 ))}
               </div>
-            ) : (
-              <div className="flex flex-col items-center justify-center py-8 text-muted-foreground">
-                <Hash className="w-8 h-8 mb-2 opacity-50" />
-                <p>输入数值查看转换结果</p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
+            </div>
+          )}
 
-      {/* 示例数值 */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <CheckCircle2 className="w-5 h-5" />
-            示例数值
-          </CardTitle>
-          <CardDescription>点击快速填充示例</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex flex-wrap gap-2">
-            {exampleNumbers.map((example, index) => (
-              <Button
-                key={index}
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  setInput(example.value);
-                  setInputBase(example.base);
-                }}
-                className="gap-1"
-              >
-                {example.name}
-              </Button>
-            ))}
-          </div>
+          {/* 错误信息 */}
+          {error && (
+            <Alert variant="destructive">
+              <AlertCircle className="w-4 h-4" />
+              <AlertTitle>错误</AlertTitle>
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+
+          {/* 空状态 */}
+          {!input && (
+            <div className="text-center py-4">
+              <Hash className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
+              <p className="text-sm text-muted-foreground">输入数值查看转换结果</p>
+            </div>
+          )}
         </CardContent>
       </Card>
+
+      {/* 操作按钮 */}
+      <div className="flex flex-wrap gap-4 justify-center">
+        <Button
+          variant="outline"
+          onClick={() => {
+            setInput("");
+            setResults({});
+            setError("");
+            toast.success("已清空");
+          }}
+          size="lg"
+          className="gap-2"
+        >
+          <Trash2 className="w-4 h-4" />
+          清空
+        </Button>
+      </div>
+
+
 
       {/* 详细说明 */}
       <Card>

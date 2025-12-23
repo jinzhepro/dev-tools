@@ -41,9 +41,9 @@ export default function TimestampGenerator() {
       value: isClient ? currentTime.getTime() : 0,
       description: "从1970-01-01 00:00:00 UTC开始的毫秒数",
       icon: Zap,
-      color: "text-yellow-500",
-      bgColor: "bg-yellow-50",
-      badgeColor: "bg-yellow-100 text-yellow-800",
+      color: "text-orange-500",
+      bgColor: "bg-orange-50",
+      badgeColor: "bg-orange-100 text-orange-800",
     },
     {
       name: "ISO 8601",
@@ -98,57 +98,70 @@ export default function TimestampGenerator() {
         </CardHeader>
       </Card>
 
-      {/* 刷新按钮 */}
-      <div className="text-center">
-        <Button onClick={updateTime} size="lg" className="gap-2">
-          <RefreshCw className="w-4 h-4" />
-          刷新时间
-        </Button>
-      </div>
+      {/* 时间戳工作台 */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Clock className="w-5 h-5" />
+            时间戳生成工作台
+          </CardTitle>
+          <CardDescription>实时生成多种格式的时间戳，支持一键复制</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {/* 控制区域 */}
+          <div className="flex items-center justify-center">
+            <Button onClick={updateTime} size="lg" className="gap-2">
+              <RefreshCw className="w-4 h-4" />
+              刷新时间
+            </Button>
+          </div>
 
-      {/* 时间格式卡片 */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {formats.map((format, index) => (
-          <Card
-            key={index}
-            className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
-          >
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className={`p-2 rounded-lg ${format.bgColor}`}>
-                    <format.icon className={`w-5 h-5 ${format.color}`} />
+          {/* 时间格式结果 */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {formats.map((format, index) => (
+              <Card key={index} className="border hover:shadow-md transition-shadow">
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <div className={`p-1.5 rounded-lg ${format.bgColor}`}>
+                        <format.icon className={`w-4 h-4 ${format.color}`} />
+                      </div>
+                      <div className="font-medium text-sm">{format.name}</div>
+                    </div>
+                    <Badge variant="secondary" className={format.badgeColor}>
+                      {format.name.split('（')[0]}
+                    </Badge>
                   </div>
-                  <CardTitle className="text-lg">{format.name}</CardTitle>
-                </div>
-                <Badge variant="secondary" className={format.badgeColor}>
-                  {format.icon.name}
-                </Badge>
-              </div>
-              <CardDescription className="text-sm">
-                {format.description}
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="bg-muted/50 p-4 rounded-xl">
-                <code className="font-mono text-sm break-all">
-                  {isClient ? format.value : "加载中..."}
-                </code>
-              </div>
-              {isClient && (
-                <Button
-                  variant="outline"
-                  onClick={() => copyToClipboard(format.value, format.name)}
-                  className="w-full gap-2"
-                >
-                  <Copy className="w-4 h-4" />
-                  复制
-                </Button>
-              )}
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+                  <div className="bg-muted/50 p-3 rounded-lg mb-3">
+                    <code className="font-mono text-sm break-all">
+                      {isClient ? format.value : "加载中..."}
+                    </code>
+                  </div>
+                  {isClient && (
+                    <Button
+                      variant="outline"
+                      onClick={() => copyToClipboard(format.value, format.name)}
+                      className="w-full gap-2"
+                    >
+                      <Copy className="w-3 h-3" />
+                      复制
+                    </Button>
+                  )}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {/* 自动刷新说明 */}
+          <Alert>
+            <Clock className="w-4 h-4" />
+            <AlertTitle>自动更新</AlertTitle>
+            <AlertDescription>
+              时间戳每秒自动更新，您也可以手动点击刷新按钮获取最新时间。
+            </AlertDescription>
+          </Alert>
+        </CardContent>
+      </Card>
 
       {/* 使用说明 */}
       <Card>
