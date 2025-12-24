@@ -10,6 +10,7 @@ import UuidGenerator from "@/components/UuidGenerator";
 import IpInfoChecker from "@/components/IpInfoChecker";
 import Geocoder from "@/components/Geocoder";
 import NumberBaseConverter from "@/components/NumberBaseConverter";
+import PasswordStrengthChecker from "@/components/PasswordStrengthChecker";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -27,6 +28,7 @@ const componentMap = {
   IpInfoChecker,
   Geocoder,
   NumberBaseConverter,
+  PasswordStrengthChecker,
 };
 
 export default async function ToolPage({ params }) {

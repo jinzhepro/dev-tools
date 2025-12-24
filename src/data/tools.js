@@ -76,6 +76,20 @@ export const tools = [
     category: "转换",
     component: "NumberBaseConverter",
   },
+  {
+    id: "password-strength-checker",
+    name: "密码强度检测",
+    description: "检测密码强度，提供安全建议，生成强密码",
+    category: "安全",
+    component: "PasswordStrengthChecker",
+  },
 ];
 
-export const categories = ["全部", "编码/解码", "生成器", "转换", "网络"];
+export const categories = [
+  "全部",
+  "编码/解码",
+  "生成器",
+  "转换",
+  "网络",
+  "安全",
+];
