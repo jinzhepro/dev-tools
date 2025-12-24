@@ -5,7 +5,7 @@
   
   <h3>一站式开发者工具平台</h3>
   
-  [![Next.js](https://img.shields.io/badge/Next.js-16.0.4-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
+  [![Next.js](https://img.shields.io/badge/Next.js-16.0.10-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
   [![React](https://img.shields.io/badge/React-19.2.0-blue?style=for-the-badge&logo=react)](https://reactjs.org/)
   [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.0-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
   [![shadcn/ui](https://img.shields.io/badge/shadcn/ui-latest-blue?style=for-the-badge&logo=shadcnui)](https://ui.shadcn.com/)
