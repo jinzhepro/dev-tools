@@ -83,6 +83,13 @@ export const tools = [
     category: "安全",
     component: "PasswordStrengthChecker",
   },
+  {
+    id: "image-compressor",
+    name: "图片压缩",
+    description: "在线压缩图片，减小文件大小，支持多种格式",
+    category: "工具",
+    component: "ImageCompressor",
+  },
 ];
 
 export const categories = [
@@ -92,4 +99,5 @@ export const categories = [
   "转换",
   "网络",
   "安全",
+  "工具",
 ];

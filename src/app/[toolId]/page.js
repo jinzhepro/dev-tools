@@ -11,6 +11,7 @@ import IpInfoChecker from "@/components/IpInfoChecker";
 import Geocoder from "@/components/Geocoder";
 import NumberBaseConverter from "@/components/NumberBaseConverter";
 import PasswordStrengthChecker from "@/components/PasswordStrengthChecker";
+import ImageCompressor from "@/components/ImageCompressor";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -29,6 +30,7 @@ const componentMap = {
   Geocoder,
   NumberBaseConverter,
   PasswordStrengthChecker,
+  ImageCompressor,
 };
 
 export default async function ToolPage({ params }) {
