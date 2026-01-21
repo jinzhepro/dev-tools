@@ -1,131 +1,104 @@
 # AGENTS.md
 
-This file provides guidance to agents when working with code in this repository.
+This file provides guidance to agents working in this Next.js development tools repository.
 
-## 项目概述
-
-这是一个基于 Next.js 的开发工具集网站，提供多种常用开发工具的在线版本。
-
-## 技术栈
-
-- Next.js 16.0.10 (App Router)
-- React 19.2.0
-- Tailwind CSS v4
-- shadcn/ui 组件库
-- JavaScript (使用 .js 扩展名，非 TypeScript)
-
-## 构建和开发命令
+## Commands
 
 ```bash
-npm run dev      # 启动开发服务器 (http://localhost:3000)
-npm run build    # 构建生产版本
-npm run start    # 启动生产服务器
-npm run lint     # 运行 ESLint 检查
+# Development
+npm run dev              # Start dev server at http://localhost:3000
+npm run build            # Production build (runs automatically)
+npm run start            # Start production server
+npm run lint             # Run ESLint check
+
+# No test framework currently configured
 ```
 
-## 项目结构关键点
+## Project Structure
 
-- **App Router**: 所有页面在 `src/app/` 目录
-- **工具组件**: 位于 `src/components/` 目录
-- **工具配置**: 在 `src/data/tools.js` 中定义
-- **动态路由**: `[toolId]` 用于渲染不同工具页面
-- **组件映射**: 使用 `componentMap` 在动态路由中注册组件
+- **App Router**: Pages in `src/app/`
+- **Tool Components**: `src/components/` (PascalCase: `JsonConverter.js`)
+- **Tool Config**: `src/data/tools.js`
+- **Dynamic Route**: `[toolId]/page.js` renders tools via `componentMap`
+- **Hooks**: `src/hooks/`
+- **Utils**: `src/lib/utils.js`
 
-## 代码风格约定
-
-### 文件命名和组织
-
-- 组件文件使用 **PascalCase**: `JsonConverter.js`, `TimestampGenerator.js`
-- 工具函数文件使用 **camelCase**: `utils.js`, `useCopyClipboard.js`
-- 配置文件使用 **kebab-case**: `eslint.config.mjs`, `next.config.mjs`
-
-### 导入规则
+## Import Order (7 groups)
 
 ```javascript
-// 1. React hooks (第一组)
+// 1. React hooks
 import { useState, useEffect } from "react";
 
-// 2. shadcn/ui 组件 (第二组)
+// 2. shadcn/ui components
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-// 3. 工具组件 (第三组)
+// 3. Tool components
 import JsonConverter from "@/components/JsonConverter";
 
-// 4. 图标库 (第四组)
+// 4. Icons
 import { Copy, AlertCircle, FileJson } from "lucide-react";
 
-// 5. 第三方库 (第五组)
+// 5. Third-party
 import { toast } from "sonner";
 
-// 6. 自定义 hooks (第六组)
+// 6. Custom hooks
 import { useCopyClipboard } from "@/hooks/useCopyClipboard";
 
-// 7. 工具函数 (第七组)
+// 7. Utils
 import { cn } from "@/lib/utils";
 ```
 
-### 组件结构
+## Component Structure
 
 ```javascript
-"use client";  // 客户端组件必须在顶部
+"use client"; // Client components - top of file
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-// ... 其他导入
+// ... other imports ...
 
 export default function ComponentName() {
-  // 1. State 定义
+  // 1. State
   const [state, setState] = useState("");
   
-  // 2. 自定义 hooks
+  // 2. Custom hooks
   const { method } = useCustomHook();
   
-  // 3. 事件处理函数
-  const handleAction = () => {
-    // 逻辑实现
-  };
+  // 3. Event handlers
+  const handleAction = () => { /* logic */ };
   
-  // 4. 渲染
-  return (
-    <div className="container mx-auto">
-      {/* 组件内容 */}
-    </div>
-  );
+  // 4. Helper functions (after component, before closing brace)
+  function helper() { /* ... */ }
+  
+  // 5. Render
+  return <div className="container mx-auto">{/* ... */}</div>;
 }
 ```
 
-### 命名约定
+## Naming Conventions
 
-| 类型 | 规则 | 示例 |
-|------|------|------|
-| 组件 | PascalCase | `JsonConverter`, `TimestampGenerator` |
-| 函数 | camelCase | `convertJson`, `handleSubmit` |
-| 变量 | camelCase | `inputValue`, `errorMessage` |
-| 常量 | UPPER_SNAKE_CASE 或 PascalCase | `CONVERSION_TYPES`, `ConversionType` |
-| CSS 类 | Tailwind utility classes | `className="flex items-center gap-4"` |
+| Type | Convention | Example |
+|------|------------|---------|
+| Component | PascalCase | `JsonConverter` |
+| Function | camelCase | `convertJson` |
+| Variable | camelCase | `inputValue` |
+| Constant | UPPER_SNAKE_CASE | `CONVERSION_TYPES` |
+| File | PascalCase (components), camelCase (utils) | `JsonConverter.js`, `utils.js` |
 
-### 错误处理
+## Error Handling
 
 ```javascript
-// 使用 try-catch 捕获错误
 try {
-  // 可能失败的代码
   const result = JSON.parse(input);
   setOutput(result);
   toast.success("转换成功");
 } catch (err) {
-  // 设置错误状态并显示
   setError("转换失败：" + err.message);
   toast.error("转换失败");
 }
 
-// UI 中显示错误
+// UI display
 {error && (
   <Alert variant="destructive">
     <AlertCircle className="w-4 h-4" />
@@ -135,34 +108,32 @@ try {
 )}
 ```
 
-### UI 和样式指南
+## UI/Styling Guidelines
 
-- 使用 shadcn/ui 基础组件: `Button`, `Card`, `Input`, `Textarea`, `Alert` 等
-- 使用 `cn()` 工具函数合并类名: `cn("base-class", condition && "conditional-class")`
-- 使用 Tailwind CSS 进行样式设计
-- 遵循 shadcn/ui New York 风格
-- 使用 CSS 变量进行主题定制
-- 组件容器使用 `container mx-auto px-4` 作为基础布局
+- Use shadcn/ui components: `Button`, `Card`, `Input`, `Textarea`, `Alert`, `RadioGroup`, `Label`, `Badge`, `Separator`
+- Use `cn()` for class merging: `cn("base-class", condition && "conditional")`
+- Base layout: `container mx-auto px-4`
+- Tool page pattern: Header → Work Area → Instructions
+- Decorate with subtle background blurs: `bg-primary/5 rounded-full blur-3xl`
+- Use gradients sparingly for emphasis
 
-### 禁止使用的模式
+## Adding New Tools
 
-- ❌ 使用 `as any`, `@ts-ignore`, `@ts-expect-error` (无 TypeScript)
-- ❌ 空 catch 块: `catch(e) {}`
-- ❌ 直接编辑前端视觉/样式代码 (委托给前端 UI/UX 工程师)
-- ❌ 删除失败的测试来"通过"测试 (无测试框架)
-- ❌ 随机调试和修改
+1. Create component in `src/components/ToolName.js`
+2. Add config to `src/data/tools.js`
+3. Register in `src/app/[toolId]/page.js` componentMap
+4. Follow existing tool patterns and naming
 
-## 添加新工具的步骤
+## Forbidden Patterns
 
-1. **创建组件**: 在 `src/components/` 创建工具组件文件
-2. **配置工具**: 在 `src/data/tools.js` 中添加工具配置
-3. **注册组件**: 在 `src/app/[toolId]/page.js` 的 `componentMap` 中注册
-4. **遵循模式**: 工具组件应遵循现有的 UI 模式和样式
+- ❌ `as any`, `@ts-ignore` (no TypeScript)
+- ❌ Empty catch blocks: `catch(e) {}`
+- ❌ Direct UI/styling edits (delegate to UI/UX engineer)
+- ❌ Random debugging changes
 
-## 重要配置
+## Key Configuration
 
-- **React 编译器**: 已启用 (`reactCompiler: true`)
-- **ESLint**: 使用 Next.js 核心网络规范配置
-- **shadcn/ui**: New York 风格，使用 CSS 变量
-- **路径别名**: `@/*` 指向 `./src/*`
-- **ESLint 忽略**: `.next/**`, `out/**`, `build/**`, `next-env.d.ts`
+- **React Compiler**: Enabled (`reactCompiler: true`)
+- **Path Alias**: `@/*` → `./src/*`
+- **shadcn/ui**: New York style, CSS variables
+- **ESLint**: Next.js core web config
