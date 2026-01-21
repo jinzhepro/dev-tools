@@ -17,12 +17,15 @@ import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Copy, Palette, Eye, Hash, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
+import { useCopyClipboard } from "@/hooks/useCopyClipboard";
 
 export default function ColorConverter() {
   const [input, setInput] = useState("#ff0000");
   const [inputType, setInputType] = useState("hex");
   const [results, setResults] = useState({});
   const [error, setError] = useState("");
+
+  const { copy } = useCopyClipboard();
 
   // 颜色转换函数
   const hexToRgb = (hex) => {
@@ -188,18 +191,7 @@ export default function ColorConverter() {
     }
   }, [input, inputType]);
 
-  useEffect(() => {
-    if (input) {
-      convertColor();
-    }
-  }, [input, inputType, convertColor]);
 
-  const copyToClipboard = (text, label) => {
-    navigator.clipboard.writeText(text);
-    toast.success(`已复制${label}到剪贴板`);
-  };
-
-  
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl space-y-8">
       {/* 标题区域 */}
@@ -326,7 +318,7 @@ export default function ColorConverter() {
                       <Button
                         variant="outline"
                         onClick={() =>
-                          copyToClipboard(format.value, format.label)
+                          copy(format.value, format.label)
                         }
                         className="w-full gap-2"
                       >

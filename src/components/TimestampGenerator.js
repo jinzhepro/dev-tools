@@ -14,10 +14,13 @@ import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Copy, RefreshCw, Clock, Zap, Globe, Home, Server } from "lucide-react";
 import { toast } from "sonner";
+import { useCopyClipboard } from "@/hooks/useCopyClipboard";
 
 export default function TimestampGenerator() {
   const [isClient, setIsClient] = useState(typeof window !== "undefined");
   const [currentTime, setCurrentTime] = useState(new Date());
+
+  const { copy } = useCopyClipboard();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -79,10 +82,6 @@ export default function TimestampGenerator() {
     toast.success("时间已刷新");
   };
 
-  const copyToClipboard = (text, label) => {
-    navigator.clipboard.writeText(text);
-    toast.success(`已复制 ${label} 到剪贴板`);
-  };
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl space-y-8">
@@ -140,7 +139,7 @@ export default function TimestampGenerator() {
                   {isClient && (
                     <Button
                       variant="outline"
-                      onClick={() => copyToClipboard(format.value, format.name)}
+                      onClick={() => copy(format.value, format.name)}
                       className="w-full gap-2"
                     >
                       <Copy className="w-3 h-3" />

@@ -27,12 +27,15 @@ import {
   Trash2,
 } from "lucide-react";
 import { toast } from "sonner";
+import { useCopyClipboard } from "@/hooks/useCopyClipboard";
 
 export default function NumberBaseConverter() {
   const [input, setInput] = useState("10");
   const [inputBase, setInputBase] = useState("10");
   const [results, setResults] = useState({});
   const [error, setError] = useState("");
+
+  const { copy } = useCopyClipboard();
 
   // 获取进制名称
   const getBaseName = (base) => {
@@ -139,14 +142,6 @@ export default function NumberBaseConverter() {
       setResults({});
     }
   }, [input, inputBase, validateInput]);
-
-  // 复制到剪贴板
-  const copyToClipboard = (text, label) => {
-    navigator.clipboard.writeText(text);
-    toast.success(`已复制 ${label} 到剪贴板`);
-  };
-
-
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -256,7 +251,7 @@ export default function NumberBaseConverter() {
                       </div>
                       <Button
                         variant="outline"
-                        onClick={() => copyToClipboard(value, `${base}进制`)}
+                        onClick={() => copy(value, `${base}进制`)}
                         className="w-full gap-2 text-xs"
                       >
                         <Copy className="w-3 h-3" />

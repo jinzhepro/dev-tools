@@ -26,12 +26,17 @@ import {
   Trash2,
 } from "lucide-react";
 import { toast } from "sonner";
+import { useCopyClipboard } from "@/hooks/useCopyClipboard";
+import { useSimpleClearForm } from "@/hooks/useClearForm";
 
 export default function Base64EncoderDecoder() {
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
   const [operation, setOperation] = useState("encode");
   const [error, setError] = useState("");
+
+  const { copy } = useCopyClipboard();
+  const clearAll = useSimpleClearForm(setInput, setOutput, setError);
 
   const encodeToBase64 = (text) => {
     try {
@@ -72,19 +77,11 @@ export default function Base64EncoderDecoder() {
     }
   };
 
-  const clearAll = () => {
-    setInput("");
-    setOutput("");
-    setError("");
-    toast.success("已清空");
-  };
-
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(output);
-    toast.success("已复制到剪贴板");
+    copy(output);
   };
 
-  
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl space-y-8">
       {/* 标题区域 */}

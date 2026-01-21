@@ -25,6 +25,7 @@ import {
   Mail,
 } from "lucide-react";
 import { toast } from "sonner";
+import { useCopyClipboard } from "@/hooks/useCopyClipboard";
 
 export default function IpInfoChecker() {
   const [currentIpInfo, setCurrentIpInfo] = useState(null);
@@ -33,6 +34,8 @@ export default function IpInfoChecker() {
   const [loading, setLoading] = useState(false);
   const [loadingSearch, setLoadingSearch] = useState(false);
   const [error, setError] = useState("");
+
+  const { copy } = useCopyClipboard();
 
   // 获取当前IP信息
   const fetchCurrentIpInfo = async () => {
@@ -98,13 +101,6 @@ export default function IpInfoChecker() {
     }
   };
 
-  // 复制IP信息到剪贴板
-  const copyToClipboard = (text, label) => {
-    navigator.clipboard.writeText(text);
-    toast.success(`已复制${label}到剪贴板`);
-  };
-
-  
 
   useEffect(() => {
     // 页面加载时自动获取当前IP信息

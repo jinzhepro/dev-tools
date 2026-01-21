@@ -24,12 +24,17 @@ import {
   Layers,
 } from "lucide-react";
 import { toast } from "sonner";
+import { useCopyClipboard } from "@/hooks/useCopyClipboard";
+import { useSimpleClearForm } from "@/hooks/useClearForm";
 
 export default function UuidGenerator() {
   const [uuid, setUuid] = useState("");
   const [bulkUuids, setBulkUuids] = useState([]);
   const [count, setCount] = useState(5);
   const [error, setError] = useState("");
+
+  const { copy } = useCopyClipboard();
+  const clearAll = useSimpleClearForm(setUuid, setBulkUuids, setError);
 
   // 生成单个UUID
   const generateUuid = () => {
@@ -82,16 +87,7 @@ export default function UuidGenerator() {
 
   // 复制到剪贴板
   const copyToClipboard = (text, label) => {
-    navigator.clipboard.writeText(text);
-    toast.success(`已复制${label}到剪贴板`);
-  };
-
-  // 清空所有
-  const clearAll = () => {
-    setUuid("");
-    setBulkUuids([]);
-    setError("");
-    toast.success("已清空");
+    copy(text, label);
   };
 
   // 复制所有UUID

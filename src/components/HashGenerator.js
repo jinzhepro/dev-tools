@@ -21,6 +21,8 @@ import MD5 from "crypto-js/md5";
 import SHA256 from "crypto-js/sha256";
 import SHA1 from "crypto-js/sha1";
 import SHA512 from "crypto-js/sha512";
+import { useCopyClipboard } from "@/hooks/useCopyClipboard";
+import { useSimpleClearForm } from "@/hooks/useClearForm";
 
 export default function HashGenerator() {
   const [input, setInput] = useState("");
@@ -29,6 +31,9 @@ export default function HashGenerator() {
     "MD5",
     "SHA256",
   ]);
+
+  const { copy } = useCopyClipboard();
+  const clearAll = useSimpleClearForm(setInput, setResults);
 
   const algorithms = [
     {
@@ -100,18 +105,6 @@ export default function HashGenerator() {
         : [...prev, algorithm]
     );
   };
-
-  const clearAll = () => {
-    setInput("");
-    setResults({});
-    toast.success("已清空");
-  };
-
-  const copyToClipboard = (hash, algorithm) => {
-    navigator.clipboard.writeText(hash);
-    toast.success(`已复制${algorithm}到剪贴板`);
-  };
-
 
 
   return (
@@ -240,7 +233,7 @@ export default function HashGenerator() {
                         </div>
                         <Button
                           variant="outline"
-                          onClick={() => copyToClipboard(hash, algorithm)}
+                          onClick={() => copy(hash, algorithm)}
                           className="w-full gap-2"
                         >
                           <Copy className="w-4 h-4" />

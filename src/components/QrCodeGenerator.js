@@ -31,11 +31,14 @@ import {
   ShoppingBag,
 } from "lucide-react";
 import { toast } from "sonner";
+import { useSimpleClearForm } from "@/hooks/useClearForm";
 
 export default function QrCodeGenerator() {
   const [text, setText] = useState("");
   const [size, setSize] = useState("256");
   const [error, setError] = useState("");
+
+  const clearAll = useSimpleClearForm(setText, setError);
 
   const validateInput = (input) => {
     if (!input.trim()) {
@@ -58,11 +61,6 @@ export default function QrCodeGenerator() {
     } else {
       setError("");
     }
-  };
-
-  const clearAll = () => {
-    setText("");
-    setError("");
   };
 
   const downloadQR = () => {

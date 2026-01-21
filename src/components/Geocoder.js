@@ -26,6 +26,7 @@ import {
   RefreshCw,
 } from "lucide-react";
 import { toast } from "sonner";
+import { useCopyClipboard } from "@/hooks/useCopyClipboard";
 
 export default function Geocoder() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -33,6 +34,8 @@ export default function Geocoder() {
   const [reverseLat, setReverseLat] = useState("");
   const [reverseLon, setReverseLon] = useState("");
   const [reverseResult, setReverseResult] = useState(null);
+
+  const { copy } = useCopyClipboard();
   const [loading, setLoading] = useState(false);
   const [reverseLoading, setReverseLoading] = useState(false);
   const [error, setError] = useState("");
@@ -149,12 +152,6 @@ export default function Geocoder() {
       setReverseResult(null);
     }
   }, [reverseLat, reverseLon]);
-
-  // 复制坐标到剪贴板
-  const copyToClipboard = (text, label) => {
-    navigator.clipboard.writeText(text);
-    toast.success(`已复制${label}到剪贴板`);
-  };
 
   // 在地图中打开（使用Google Maps）
   const openInMap = (lat, lon, address = "") => {
@@ -274,7 +271,7 @@ export default function Geocoder() {
                               variant="outline"
                               size="sm"
                               onClick={() =>
-                                copyToClipboard(
+                                copy(
                                   `${result.lat}, ${result.lon}`,
                                   "坐标"
                                 )
@@ -359,12 +356,12 @@ export default function Geocoder() {
                       </div>
                       <div className="flex gap-2">
                         <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() =>
-                            copyToClipboard(`${reverseLat}, ${reverseLon}`, "坐标")
-                          }
-                          className="text-xs gap-1"
+                        variant="outline"
+                        size="sm"
+                        onClick={() =>
+                          copy(`${reverseLat}, ${reverseLon}`, "坐标")
+                        }
+                        className="text-xs gap-1"
                         >
                           <Copy className="w-3 h-3" />
                           复制坐标

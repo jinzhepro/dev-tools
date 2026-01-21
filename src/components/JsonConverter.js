@@ -25,12 +25,17 @@ import {
   ShieldOff,
 } from "lucide-react";
 import { toast } from "sonner";
+import { useCopyClipboard } from "@/hooks/useCopyClipboard";
+import { useSimpleClearForm } from "@/hooks/useClearForm";
 
 export default function JsonConverter() {
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
   const [conversionType, setConversionType] = useState("compress");
   const [error, setError] = useState("");
+
+  const { copy } = useCopyClipboard();
+  const clearAll = useSimpleClearForm(setInput, setOutput, setError);
 
   const convertJson = () => {
     try {
@@ -66,18 +71,6 @@ export default function JsonConverter() {
       setError("转换失败：" + err.message);
       setOutput("");
     }
-  };
-
-  const clearAll = () => {
-    setInput("");
-    setOutput("");
-    setError("");
-    toast.success("已清空");
-  };
-
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(output);
-    toast.success("已复制到剪贴板");
   };
 
   
@@ -186,7 +179,7 @@ export default function JsonConverter() {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={copyToClipboard}
+                    onClick={() => copy(output)}
                     className="gap-1"
                   >
                     <Copy className="w-3 h-3" />

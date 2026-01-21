@@ -31,19 +31,20 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { useCopyClipboard } from "@/hooks/useCopyClipboard";
 
 export default function PasswordStrengthChecker() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [strength, setStrength] = useState({
     score: 0,
-    level: "无",
-    color: "bg-gray-500",
-    textColor: "text-gray-500",
-    icon: ShieldX,
-    feedback: [],
+    label: "无",
+    color: "bg-gray-200",
+    icon: Shield,
     suggestions: [],
   });
+
+  const { copy } = useCopyClipboard();
 
   const strengthLevels = [
     {
@@ -253,13 +254,12 @@ export default function PasswordStrengthChecker() {
     toast.success("已生成强密码");
   };
 
-  const copyToClipboard = () => {
+  const copyPassword = () => {
     if (!password) {
       toast.error("没有可复制的密码");
       return;
     }
-    navigator.clipboard.writeText(password);
-    toast.success("密码已复制到剪贴板");
+    copy(password);
   };
 
   const clearPassword = () => {
@@ -334,7 +334,7 @@ export default function PasswordStrengthChecker() {
               生成强密码
             </Button>
             <Button
-              onClick={copyToClipboard}
+              onClick={copyPassword}
               variant="outline"
               size="lg"
               className="gap-2"
