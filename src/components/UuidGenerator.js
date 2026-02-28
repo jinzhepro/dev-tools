@@ -22,6 +22,7 @@ import {
   Key,
   FileText,
   Layers,
+  AlertCircle,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useCopyClipboard } from "@/hooks/useCopyClipboard";
@@ -119,56 +120,45 @@ export default function UuidGenerator() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-6xl space-y-8">
-      {/* 标题区域 */}
-      <Card className="border-0 shadow-none bg-transparent">
-        <CardHeader className="text-center px-0">
-          <CardTitle className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            UUID生成器
-          </CardTitle>
-          <CardDescription className="text-lg">
-            生成通用唯一标识符（UUID），支持批量生成
-          </CardDescription>
-        </CardHeader>
-      </Card>
+    <div className="container mx-auto px-4 py-8 max-w-6xl space-y-6">
+      {/* 标题 */}
+      <div className="text-center mb-6">
+        <h1 className="text-3xl font-bold mb-2">UUID 生成器</h1>
+        <p className="text-muted-foreground">
+          生成通用唯一标识符（UUID），支持批量生成
+        </p>
+      </div>
 
       {/* 错误提示 */}
       {error && (
         <Alert variant="destructive">
-          <Hash className="w-4 h-4" />
+          <AlertCircle className="w-4 h-4" />
           <AlertTitle>错误</AlertTitle>
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
 
-      {/* UUID生成工作台 */}
+      {/* UUID 生成 */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Key className="w-5 h-5" />
-            UUID生成工作台
-          </CardTitle>
-          <CardDescription>生成单个或批量UUID标识符</CardDescription>
+          <CardTitle>生成 UUID</CardTitle>
+          <CardDescription>生成单个或批量 UUID 标识符</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          {/* 操作选择 */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Card className="border">
+            <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <Key className="w-4 h-4" />
-                  单个UUID
-                </CardTitle>
+                <CardTitle className="text-base">单个 UUID</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <Button onClick={generateUuid} className="w-full gap-2">
-                  <RefreshCw className="w-4 h-4" />
-                  生成UUID
+                <Button onClick={generateUuid} className="w-full">
+                  <RefreshCw className="w-4 h-4 mr-2" />
+                  生成 UUID
                 </Button>
 
                 {uuid && (
                   <>
-                    <div className="bg-muted/50 p-3 rounded-lg">
+                    <div className="bg-muted/50 p-3 rounded-md">
                       <code className="font-mono text-sm break-all">
                         {uuid}
                       </code>
@@ -177,41 +167,28 @@ export default function UuidGenerator() {
                       <Button
                         variant="outline"
                         onClick={() => copyToClipboard(uuid, "UUID")}
-                        className="gap-2"
                       >
-                        <Copy className="w-3 h-3" />
-                        复制标准
+                        <Copy className="w-3 h-3 mr-1" />
+                        复制
                       </Button>
                       <Button
                         variant="outline"
                         onClick={() =>
-                          copyToClipboard(uuid.replace(/-/g, ""), "无连字符UUID")
+                          copyToClipboard(uuid.replace(/-/g, ""), "无连字符 UUID")
                         }
-                        className="gap-2"
                       >
-                        <Copy className="w-3 h-3" />
-                        复制无连字符
+                        <Copy className="w-3 h-3 mr-1" />
+                        无连字符
                       </Button>
-                    </div>
-                    <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground">
-                      <div>
-                        <span className="font-medium">版本:</span> {getUuidVersion(uuid)}
-                      </div>
-                      <div>
-                        <span className="font-medium">变体:</span> {getUuidVariant(uuid)}
-                      </div>
                     </div>
                   </>
                 )}
               </CardContent>
             </Card>
 
-            <Card className="border">
+            <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <Layers className="w-4 h-4" />
-                  批量生成
-                </CardTitle>
+                <CardTitle className="text-base">批量生成</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="space-y-2">
@@ -228,9 +205,9 @@ export default function UuidGenerator() {
 
                 <Button
                   onClick={generateBulkUuids}
-                  className="w-full gap-2"
+                  className="w-full"
                 >
-                  <Layers className="w-4 h-4" />
+                  <Layers className="w-4 h-4 mr-2" />
                   批量生成 ({count}个)
                 </Button>
 
@@ -244,13 +221,12 @@ export default function UuidGenerator() {
                         variant="outline"
                         onClick={copyAllUuids}
                         size="sm"
-                        className="gap-2"
                       >
-                        <Copy className="w-3 h-3" />
+                        <Copy className="w-3 h-3 mr-1" />
                         复制全部
                       </Button>
                     </div>
-                    <div className="bg-muted/50 p-3 rounded-lg max-h-32 overflow-y-auto">
+                    <div className="bg-muted/50 p-3 rounded-md max-h-32 overflow-y-auto">
                       <div className="space-y-1">
                         {bulkUuids.slice(0, 3).map((uuidItem, index) => (
                           <div
@@ -272,15 +248,6 @@ export default function UuidGenerator() {
               </CardContent>
             </Card>
           </div>
-
-          {/* 错误信息 */}
-          {error && (
-            <Alert variant="destructive">
-              <Hash className="w-4 h-4" />
-              <AlertTitle>错误</AlertTitle>
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          )}
         </CardContent>
       </Card>
 
@@ -288,39 +255,32 @@ export default function UuidGenerator() {
       {bulkUuids.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Layers className="w-5 h-5" />
-              批量结果详情
-            </CardTitle>
-            <CardDescription>查看和管理批量生成的UUID</CardDescription>
+            <CardTitle>批量结果详情</CardTitle>
+            <CardDescription>查看和管理批量生成的 UUID</CardDescription>
           </CardHeader>
           <CardContent>
-            <Card className="border">
-              <CardContent className="p-4">
-                <div className="max-h-64 overflow-y-auto space-y-2">
-                  {bulkUuids.map((uuidItem, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center justify-between group hover:bg-muted/50 rounded p-2 transition-colors"
-                    >
-                      <span className="flex-1 font-mono text-sm break-all mr-2">
-                        {uuidItem}
-                      </span>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() =>
-                          copyToClipboard(uuidItem, `UUID ${index + 1}`)
-                        }
-                        className="opacity-0 group-hover:opacity-100 h-7 w-7 p-0"
-                      >
-                        <Copy className="w-3 h-3" />
-                      </Button>
-                    </div>
-                  ))}
+            <div className="max-h-64 overflow-y-auto space-y-2">
+              {bulkUuids.map((uuidItem, index) => (
+                <div
+                  key={index}
+                  className="flex items-center justify-between group hover:bg-muted/50 rounded-md p-2 transition-colors"
+                >
+                  <span className="flex-1 font-mono text-sm break-all mr-2">
+                    {uuidItem}
+                  </span>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() =>
+                      copyToClipboard(uuidItem, `UUID ${index + 1}`)
+                    }
+                    className="h-7 w-7 p-0"
+                  >
+                    <Copy className="w-3 h-3" />
+                  </Button>
                 </div>
-              </CardContent>
-            </Card>
+              ))}
+            </div>
           </CardContent>
         </Card>
       )}
@@ -331,9 +291,8 @@ export default function UuidGenerator() {
           variant="outline"
           onClick={clearAll}
           size="lg"
-          className="gap-2"
         >
-          <Trash2 className="w-4 h-4" />
+          <Trash2 className="w-4 h-4 mr-2" />
           清空全部
         </Button>
       </div>
@@ -341,52 +300,34 @@ export default function UuidGenerator() {
       {/* 使用说明 */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <FileText className="w-5 h-5" />
-            使用说明
-          </CardTitle>
+          <CardTitle>使用说明</CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-3">
-              <h4 className="font-semibold flex items-center gap-2">
-                <Hash className="w-4 h-4" /> UUID格式
-              </h4>
+              <h4 className="font-semibold">UUID 格式</h4>
               <ul className="text-sm text-muted-foreground space-y-1">
-                <li>
-                  • <strong>标准格式：</strong>
-                  xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx
-                </li>
-                <li>
-                  • <strong>无连字符：</strong>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-                </li>
-                <li>
-                  • <strong>版本：</strong>当前生成UUID v4
-                </li>
-                <li>
-                  • <strong>变体：</strong>RFC 4122标准
-                </li>
+                <li>• <strong>标准格式：</strong>xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx</li>
+                <li>• <strong>无连字符：</strong>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</li>
+                <li>• <strong>版本：</strong>当前生成 UUID v4</li>
+                <li>• <strong>变体：</strong>RFC 4122 标准</li>
               </ul>
             </div>
             <div className="space-y-3">
-              <h4 className="font-semibold flex items-center gap-2">
-                <Key className="w-4 h-4" /> 应用场景
-              </h4>
+              <h4 className="font-semibold">应用场景</h4>
               <ul className="text-sm text-muted-foreground space-y-1">
                 <li>• 数据库主键</li>
-                <li>• API请求标识</li>
-                <li>• 会话ID</li>
+                <li>• API 请求标识</li>
+                <li>• 会话 ID</li>
                 <li>• 文件名唯一标识</li>
               </ul>
             </div>
           </div>
           <Separator />
           <Alert>
-            <Key className="w-4 h-4" />
             <AlertTitle>技术说明</AlertTitle>
             <AlertDescription>
-              UUID是128位全局唯一标识符，即使在分布式系统中也能保证极高的唯一性。当前生成的是标准UUID
-              v4版本，使用加密安全的随机数生成器。
+              UUID 是 128 位全局唯一标识符，即使在分布式系统中也能保证极高的唯一性。当前生成的是标准 UUID v4 版本，使用加密安全的随机数生成器。
             </AlertDescription>
           </Alert>
         </CardContent>

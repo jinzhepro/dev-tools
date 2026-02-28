@@ -15,7 +15,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { Copy, Palette, Eye, Hash, RefreshCw } from "lucide-react";
+import { Copy, Palette, Eye, Hash, RefreshCw, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import { useCopyClipboard } from "@/hooks/useCopyClipboard";
 
@@ -193,32 +193,24 @@ export default function ColorConverter() {
 
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-6xl space-y-8">
-      {/* 标题区域 */}
-      <Card className="border-0 shadow-none bg-transparent">
-        <CardHeader className="text-center px-0">
-          <CardTitle className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            颜色转换
-          </CardTitle>
-          <CardDescription className="text-lg">
-            HEX、RGB/RGBA、HSL颜色格式互转
-          </CardDescription>
-        </CardHeader>
-      </Card>
+    <div className="container mx-auto px-4 py-8 max-w-6xl space-y-6">
+      {/* 标题 */}
+      <div className="text-center mb-6">
+        <h1 className="text-3xl font-bold mb-2">颜色转换</h1>
+        <p className="text-muted-foreground">
+          HEX、RGB/RGBA、HSL 颜色格式互转
+        </p>
+      </div>
 
-      {/* 主要工作区域 - 整合输入、控制、预览 */}
+      {/* 主要工作区 */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Palette className="w-5 h-5" />
-            颜色转换工作台
-          </CardTitle>
+          <CardTitle>颜色转换工具</CardTitle>
           <CardDescription>输入颜色值，选择格式，实时查看转换结果</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          {/* 输入格式选择 - 置顶 */}
           <div className="space-y-3">
-            <Label className="text-sm font-medium">输入格式</Label>
+            <Label>输入格式</Label>
             <RadioGroup
               value={inputType}
               onValueChange={setInputType}
@@ -233,7 +225,7 @@ export default function ColorConverter() {
                 },
                 { value: "hsl", label: "HSL", example: "hsl(0, 100%, 50%)" },
               ].map((type) => (
-                <div key={type.value} className="relative">
+                <div key={type.value}>
                   <RadioGroupItem
                     value={type.value}
                     id={`type-${type.value}`}
@@ -241,10 +233,10 @@ export default function ColorConverter() {
                   />
                   <Label
                     htmlFor={`type-${type.value}`}
-                    className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-3 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary cursor-pointer transition-all"
+                    className="flex flex-col items-center justify-center p-3 rounded-md border-2 border-muted hover:bg-accent peer-data-[state=checked]:border-primary cursor-pointer transition-all"
                   >
                     <span className="font-medium text-sm">{type.label}</span>
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-xs text-muted-foreground mt-1">
                       {type.example}
                     </span>
                   </Label>
@@ -253,13 +245,9 @@ export default function ColorConverter() {
             </RadioGroup>
           </div>
 
-          {/* 输入输出区域 */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* 输入区域 */}
             <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <Label className="text-sm font-medium">颜色值</Label>
-                              </div>
+              <Label>颜色值</Label>
               <Input
                 type="text"
                 value={input}
@@ -269,11 +257,10 @@ export default function ColorConverter() {
               />
             </div>
 
-            {/* 预览区域 */}
             <div className="space-y-3">
-              <Label className="text-sm font-medium">颜色预览</Label>
+              <Label>颜色预览</Label>
               <div
-                className="flex justify-center items-center h-32 rounded-xl border-2 border-border"
+                className="flex justify-center items-center h-32 rounded-md border-2 border-border"
                 style={{
                   backgroundColor: results.hex || "#f3f4f6",
                   opacity: results.rgbValues?.a || 1,
@@ -294,23 +281,19 @@ export default function ColorConverter() {
             </div>
           </div>
 
-          {/* 转换结果 */}
           {Object.keys(results).length > 0 && !error && (
             <div className="space-y-4">
-              <Label className="text-sm font-medium">转换结果</Label>
+              <Label>转换结果</Label>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {[
                   { key: "hex", label: "HEX", value: results.hex },
                   { key: "rgb", label: "RGB/RGBA", value: results.rgb },
                   { key: "hsl", label: "HSL", value: results.hsl },
                 ].map((format) => (
-                  <Card key={format.key} className="border">
+                  <Card key={format.key}>
                     <CardContent className="p-4">
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="font-medium">{format.label}</div>
-                        <Badge variant="secondary">{format.label}</Badge>
-                      </div>
-                      <div className="bg-muted/50 p-3 rounded-lg mb-3">
+                      <div className="font-medium mb-3">{format.label}</div>
+                      <div className="bg-muted/50 p-3 rounded-md mb-3">
                         <code className="font-mono text-sm break-all">
                           {format.value}
                         </code>
@@ -320,9 +303,9 @@ export default function ColorConverter() {
                         onClick={() =>
                           copy(format.value, format.label)
                         }
-                        className="w-full gap-2"
+                        className="w-full"
                       >
-                        <Copy className="w-4 h-4" />
+                        <Copy className="w-4 h-4 mr-2" />
                         复制
                       </Button>
                     </CardContent>
@@ -332,10 +315,9 @@ export default function ColorConverter() {
             </div>
           )}
 
-          {/* 错误信息 */}
           {error && (
             <Alert variant="destructive">
-              <Palette className="w-4 h-4" />
+              <AlertCircle className="w-4 h-4" />
               <AlertTitle>错误</AlertTitle>
               <AlertDescription>{error}</AlertDescription>
             </Alert>
@@ -343,55 +325,37 @@ export default function ColorConverter() {
         </CardContent>
       </Card>
 
-      
-
       {/* 使用说明 */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Palette className="w-5 h-5" />
-            使用说明
-          </CardTitle>
+          <CardTitle>使用说明</CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-3">
-              <h4 className="font-semibold flex items-center gap-2">
-                <Hash className="w-4 h-4" /> 支持格式
-              </h4>
+              <h4 className="font-semibold">支持格式</h4>
               <ul className="text-sm text-muted-foreground space-y-1">
-                <li>
-                  • <strong>HEX：</strong>#ff0000, #3366cc
-                </li>
-                <li>
-                  • <strong>RGB：</strong>rgb(255, 0, 0)
-                </li>
-                <li>
-                  • <strong>RGBA：</strong>rgba(255, 0, 0, 0.5)
-                </li>
-                <li>
-                  • <strong>HSL：</strong>hsl(0, 100%, 50%)
-                </li>
+                <li>• <strong>HEX：</strong>#ff0000, #3366cc</li>
+                <li>• <strong>RGB：</strong>rgb(255, 0, 0)</li>
+                <li>• <strong>RGBA：</strong>rgba(255, 0, 0, 0.5)</li>
+                <li>• <strong>HSL：</strong>hsl(0, 100%, 50%)</li>
               </ul>
             </div>
             <div className="space-y-3">
-              <h4 className="font-semibold flex items-center gap-2">
-                <Eye className="w-4 h-4" /> 应用场景
-              </h4>
+              <h4 className="font-semibold">应用场景</h4>
               <ul className="text-sm text-muted-foreground space-y-1">
-                <li>• Web开发颜色调试</li>
+                <li>• Web 开发颜色调试</li>
                 <li>• 设计稿颜色转换</li>
-                <li>• CSS样式调整</li>
+                <li>• CSS 样式调整</li>
                 <li>• 颜色值标准化</li>
               </ul>
             </div>
           </div>
           <Separator />
           <Alert>
-            <Palette className="w-4 h-4" />
             <AlertTitle>提示</AlertTitle>
             <AlertDescription>
-              RGBA格式包含透明度(alpha)值，HEX和HSL格式会忽略透明度信息。
+              RGBA 格式包含透明度 (alpha) 值，HEX 和 HSL 格式会忽略透明度信息。
             </AlertDescription>
           </Alert>
         </CardContent>

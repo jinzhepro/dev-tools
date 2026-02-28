@@ -270,55 +270,42 @@ export default function PasswordStrengthChecker() {
   const StrengthIcon = strength.icon;
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-6xl space-y-8">
-      {/* 标题区域 */}
-      <Card className="border-0 shadow-none bg-transparent">
-        <CardHeader className="text-center px-0">
-          <CardTitle className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            密码强度检测
-          </CardTitle>
-          <CardDescription className="text-lg">
-            检测密码强度，获取安全建议，生成强密码
-          </CardDescription>
-        </CardHeader>
-      </Card>
+    <div className="container mx-auto px-4 py-8 max-w-6xl space-y-6">
+      {/* 标题 */}
+      <div className="text-center mb-6">
+        <h1 className="text-3xl font-bold mb-2">密码强度检测</h1>
+        <p className="text-muted-foreground">
+          检测密码强度，获取安全建议，生成强密码
+        </p>
+      </div>
 
-      {/* 主要工作区域 */}
+      {/* 密码检测 */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Lock className="w-5 h-5" />
-            密码检测工作台
-          </CardTitle>
+          <CardTitle>密码强度分析</CardTitle>
           <CardDescription>输入密码进行强度分析，获取安全建议</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          {/* 密码输入区域 */}
+          {/* 密码输入 */}
           <div className="space-y-3">
-            <Label className="text-sm font-medium">输入密码</Label>
+            <Label>输入密码</Label>
             <div className="relative">
               <Input
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="输入要检测的密码..."
-                className="pr-20"
+                className="pr-12"
               />
-              <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex gap-1">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="h-8 w-8 p-0"
-                >
-                  {showPassword ? (
-                    <EyeOff className="w-4 h-4" />
-                  ) : (
-                    <Eye className="w-4 h-4" />
-                  )}
-                </Button>
-              </div>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 p-0"
+              >
+                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </Button>
             </div>
           </div>
 
@@ -328,29 +315,26 @@ export default function PasswordStrengthChecker() {
               onClick={generateStrongPassword}
               variant="outline"
               size="lg"
-              className="gap-2"
             >
-              <RefreshCw className="w-4 h-4" />
+              <RefreshCw className="w-4 h-4 mr-2" />
               生成强密码
             </Button>
             <Button
               onClick={copyPassword}
               variant="outline"
               size="lg"
-              className="gap-2"
               disabled={!password}
             >
-              <Copy className="w-4 h-4" />
+              <Copy className="w-4 h-4 mr-2" />
               复制密码
             </Button>
             <Button
               onClick={clearPassword}
               variant="outline"
               size="lg"
-              className="gap-2"
               disabled={!password}
             >
-              <XCircle className="w-4 h-4" />
+              <XCircle className="w-4 h-4 mr-2" />
               清空
             </Button>
           </div>
@@ -359,7 +343,7 @@ export default function PasswordStrengthChecker() {
           {password && (
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <Label className="text-sm font-medium">密码强度</Label>
+                <Label>密码强度</Label>
                 <Badge
                   variant="secondary"
                   className={cn(strength.textColor, "border-current")}
@@ -382,7 +366,7 @@ export default function PasswordStrengthChecker() {
           {/* 反馈信息 */}
           {password && strength.feedback.length > 0 && (
             <div className="space-y-3">
-              <Label className="text-sm font-medium">密码特征</Label>
+              <Label>密码特征</Label>
               <div className="space-y-2">
                 {strength.feedback.map((item, index) => (
                   <div key={index} className="flex items-center gap-2 text-sm">
@@ -397,7 +381,7 @@ export default function PasswordStrengthChecker() {
           {/* 改进建议 */}
           {password && strength.suggestions.length > 0 && (
             <div className="space-y-3">
-              <Label className="text-sm font-medium">改进建议</Label>
+              <Label>改进建议</Label>
               <div className="space-y-2">
                 {strength.suggestions.map((suggestion, index) => (
                   <div key={index} className="flex items-center gap-2 text-sm">
@@ -414,66 +398,34 @@ export default function PasswordStrengthChecker() {
       {/* 使用说明 */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Shield className="w-5 h-5" />
-            密码安全指南
-          </CardTitle>
+          <CardTitle>密码安全指南</CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-3">
-              <h4 className="font-semibold flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4" /> 强密码特征
-              </h4>
+              <h4 className="font-semibold">强密码特征</h4>
               <ul className="text-sm text-muted-foreground space-y-2">
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="w-4 h-4 text-green-500 mt-0.5" />
-                  <span>至少12个字符（推荐16个以上）</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="w-4 h-4 text-green-500 mt-0.5" />
-                  <span>包含大小写字母、数字和特殊字符</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="w-4 h-4 text-green-500 mt-0.5" />
-                  <span>避免常见单词和个人信息</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle className="w-4 h-4 text-green-500 mt-0.5" />
-                  <span>不包含连续字符或重复模式</span>
-                </li>
+                <li>• 至少 12 个字符（推荐 16 个以上）</li>
+                <li>• 包含大小写字母、数字和特殊字符</li>
+                <li>• 避免常见单词和个人信息</li>
+                <li>• 不包含连续字符或重复模式</li>
               </ul>
             </div>
             <div className="space-y-3">
-              <h4 className="font-semibold flex items-center gap-2">
-                <Key className="w-4 h-4" /> 安全建议
-              </h4>
+              <h4 className="font-semibold">安全建议</h4>
               <ul className="text-sm text-muted-foreground space-y-2">
-                <li className="flex items-start gap-2">
-                  <AlertTriangle className="w-4 h-4 text-yellow-500 mt-0.5" />
-                  <span>为每个账户使用不同的密码</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <AlertTriangle className="w-4 h-4 text-yellow-500 mt-0.5" />
-                  <span>定期更新重要账户密码</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <AlertTriangle className="w-4 h-4 text-yellow-500 mt-0.5" />
-                  <span>使用密码管理器存储密码</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <AlertTriangle className="w-4 h-4 text-yellow-500 mt-0.5" />
-                  <span>启用双因素认证（2FA）</span>
-                </li>
+                <li>• 为每个账户使用不同的密码</li>
+                <li>• 定期更新重要账户密码</li>
+                <li>• 使用密码管理器存储密码</li>
+                <li>• 启用双因素认证（2FA）</li>
               </ul>
             </div>
           </div>
           <Separator />
           <Alert>
-            <Lock className="w-4 h-4" />
             <AlertTitle>隐私保护</AlertTitle>
             <AlertDescription>
-              本工具在本地浏览器中运行，不会上传或存储您的密码信息。所有密码检测都在您的设备上完成，确保隐私安全。
+              本工具在本地浏览器中运行，不会上传或存储您的密码信息。所有密码检测都在您的设备上完成。
             </AlertDescription>
           </Alert>
         </CardContent>

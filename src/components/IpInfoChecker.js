@@ -10,6 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
@@ -108,27 +109,20 @@ export default function IpInfoChecker() {
   }, []);
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-6xl space-y-8">
-      {/* 标题区域 */}
-      <Card className="border-0 shadow-none bg-transparent">
-        <CardHeader className="text-center px-0">
-          <CardTitle className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            IP地址查询
-          </CardTitle>
-          <CardDescription className="text-lg">
-            查询IP地址信息和地理位置
-          </CardDescription>
-        </CardHeader>
-      </Card>
+    <div className="container mx-auto px-4 py-8 max-w-6xl space-y-6">
+      {/* 标题 */}
+      <div className="text-center mb-6">
+        <h1 className="text-3xl font-bold mb-2">IP 地址查询</h1>
+        <p className="text-muted-foreground">
+          查询 IP 地址信息和地理位置
+        </p>
+      </div>
 
-      {/* IP查询工作台 */}
+      {/* IP 查询 */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Globe className="w-5 h-5" />
-            IP地址查询工作台
-          </CardTitle>
-          <CardDescription>查询当前IP信息或指定IP地址的详细信息</CardDescription>
+          <CardTitle>IP 查询</CardTitle>
+          <CardDescription>查询当前 IP 信息或指定 IP 地址的详细信息</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           {/* 错误信息 */}
@@ -142,24 +136,18 @@ export default function IpInfoChecker() {
 
           {/* 查询控制区域 */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* 当前IP查询 */}
-            <Card className="border">
+            {/* 当前 IP 查询 */}
+            <Card>
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-lg flex items-center gap-2">
-                    <Globe className="w-4 h-4" />
-                    当前IP
-                  </CardTitle>
+                  <CardTitle className="text-base">当前 IP</CardTitle>
                   <Button
                     onClick={fetchCurrentIpInfo}
                     disabled={loading}
                     variant="outline"
                     size="sm"
-                    className="gap-2"
                   >
-                    <RefreshCw
-                      className={`w-3 h-3 ${loading ? "animate-spin" : ""}`}
-                    />
+                    <RefreshCw className={`w-3 h-3 mr-1 ${loading ? "animate-spin" : ""}`} />
                     刷新
                   </Button>
                 </div>
@@ -167,7 +155,7 @@ export default function IpInfoChecker() {
               <CardContent className="space-y-3">
                 {currentIpInfo ? (
                   <>
-                    <div className="bg-muted/50 p-3 rounded-lg">
+                    <div className="bg-muted/50 p-3 rounded-md">
                       <div className="font-mono text-sm text-center">
                         {currentIpInfo.ip}
                       </div>
@@ -190,42 +178,37 @@ export default function IpInfoChecker() {
                 ) : (
                   <div className="text-center py-4">
                     <Globe className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
-                    <p className="text-sm text-muted-foreground">正在获取IP信息...</p>
+                    <p className="text-sm text-muted-foreground">正在获取 IP 信息...</p>
                   </div>
                 )}
               </CardContent>
             </Card>
 
-            {/* 指定IP查询 */}
-            <Card className="border">
+            {/* 指定 IP 查询 */}
+            <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <Search className="w-4 h-4" />
-                  指定IP查询
-                </CardTitle>
+                <CardTitle className="text-base">指定 IP 查询</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 <Input
                   type="text"
                   value={searchIp}
                   onChange={(e) => setSearchIp(e.target.value)}
-                  placeholder="输入IP地址，如：8.8.8.8"
+                  placeholder="输入 IP 地址，如：8.8.8.8"
                   className="font-mono text-sm"
                   onKeyPress={(e) => e.key === "Enter" && searchIpInfo()}
                 />
                 <Button
                   onClick={searchIpInfo}
                   disabled={loadingSearch || !searchIp.trim()}
-                  className="w-full gap-2"
+                  className="w-full"
                 >
-                  <Search
-                    className={`w-4 h-4 ${loadingSearch ? "animate-spin" : ""}`}
-                  />
+                  <Search className={`w-4 h-4 mr-2 ${loadingSearch ? "animate-spin" : ""}`} />
                   {loadingSearch ? "查询中..." : "查询"}
                 </Button>
 
                 {searchedIpInfo && (
-                  <div className="bg-muted/50 p-3 rounded-lg">
+                  <div className="bg-muted/50 p-3 rounded-md">
                     <div className="font-mono text-xs text-center">
                       {searchedIpInfo.ip} - {searchedIpInfo.country_name || searchedIpInfo.country}
                     </div>
@@ -238,17 +221,17 @@ export default function IpInfoChecker() {
           {/* 详细信息展示 */}
           {(currentIpInfo || searchedIpInfo) && (
             <div className="space-y-4">
-              <div className="text-sm font-medium">
-                {currentIpInfo ? "当前IP详细信息" : "查询结果详细信息"}
-              </div>
+              <Label>
+                {currentIpInfo ? "当前 IP 详细信息" : "查询结果详细信息"}
+              </Label>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {(currentIpInfo || searchedIpInfo) && Object.entries(currentIpInfo || searchedIpInfo)
                   .filter(([key]) => ['ip', 'country_name', 'country', 'city', 'org', 'latitude', 'longitude', 'timezone', 'postal'].includes(key))
                   .map(([key, value]) => (
-                    <Card key={key} className="border">
+                    <Card key={key}>
                       <CardContent className="p-3">
                         <div className="text-xs font-medium text-muted-foreground mb-1">
-                          {key === 'ip' ? 'IP地址' :
+                          {key === 'ip' ? 'IP 地址' :
                            key === 'country_name' || key === 'country' ? '国家/地区' :
                            key === 'org' ? 'ISP' :
                            key === 'latitude' ? '纬度' :
@@ -269,47 +252,37 @@ export default function IpInfoChecker() {
         </CardContent>
       </Card>
 
-      
-
       {/* 使用说明 */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Globe className="w-5 h-5" />
-            使用说明
-          </CardTitle>
+          <CardTitle>使用说明</CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-3">
-              <h4 className="font-semibold flex items-center gap-2">
-                <Wifi className="w-4 h-4" /> 功能特点
-              </h4>
+              <h4 className="font-semibold">功能特点</h4>
               <ul className="text-sm text-muted-foreground space-y-1">
-                <li>• 查询当前公网IP地址信息</li>
-                <li>• 支持查询任意IP地址详情</li>
+                <li>• 查询当前公网 IP 地址信息</li>
+                <li>• 支持查询任意 IP 地址详情</li>
                 <li>• 显示地理位置和网络信息</li>
-                <li>• 一键复制IP地址数据</li>
+                <li>• 一键复制 IP 地址数据</li>
               </ul>
             </div>
             <div className="space-y-3">
-              <h4 className="font-semibold flex items-center gap-2">
-                <MapPin className="w-4 h-4" /> 网络诊断
-              </h4>
+              <h4 className="font-semibold">网络诊断</h4>
               <ul className="text-sm text-muted-foreground space-y-1">
                 <li>• 网络连通性测试</li>
                 <li>• 网络位置分析</li>
-                <li>• ISP信息查询</li>
+                <li>• ISP 信息查询</li>
                 <li>• 地理定位服务</li>
               </ul>
             </div>
           </div>
           <Separator />
           <Alert>
-            <Mail className="w-4 h-4" />
             <AlertTitle>隐私说明</AlertTitle>
             <AlertDescription>
-              IP信息查询会向第三方API服务发送请求来获取地理位置和ISP信息。请注意保护您的隐私，我们不会存储您的查询记录。
+              IP 信息查询会向第三方 API 服务发送请求来获取地理位置和 ISP 信息。请注意保护您的隐私，我们不会存储您的查询记录。
             </AlertDescription>
           </Alert>
         </CardContent>

@@ -156,33 +156,25 @@ export default function NumberBaseConverter() {
   }, [input, inputBase, convertNumber]);
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-6xl space-y-8">
-      {/* 标题区域 */}
-      <Card className="border-0 shadow-none bg-transparent">
-        <CardHeader className="text-center px-0">
-          <CardTitle className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            进制转换器
-          </CardTitle>
-          <CardDescription className="text-lg">
-            二进制、八进制、十进制、十六进制相互转换
-          </CardDescription>
-        </CardHeader>
-      </Card>
+    <div className="container mx-auto px-4 py-8 max-w-6xl space-y-6">
+      {/* 标题 */}
+      <div className="text-center mb-6">
+        <h1 className="text-3xl font-bold mb-2">进制转换器</h1>
+        <p className="text-muted-foreground">
+          二进制、八进制、十进制、十六进制相互转换
+        </p>
+      </div>
 
-{/* 进制转换工作台 */}
+      {/* 进制转换 */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Terminal className="w-5 h-5" />
-            进制转换工作台
-          </CardTitle>
-          <CardDescription>二进制、八进制、十进制、十六进制相互转换</CardDescription>
+          <CardTitle>输入数值</CardTitle>
+          <CardDescription>选择输入进制，自动转换其他进制</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          {/* 输入控制区域 */}
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label className="text-sm font-medium">输入数值</Label>
+              <Label>输入数值</Label>
               <Input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
@@ -191,9 +183,8 @@ export default function NumberBaseConverter() {
               />
             </div>
 
-            {/* 进制选择 */}
             <div className="space-y-2">
-              <Label className="text-sm font-medium">输入进制</Label>
+              <Label>输入进制</Label>
               <RadioGroup
                 value={inputBase}
                 onValueChange={setInputBase}
@@ -205,7 +196,7 @@ export default function NumberBaseConverter() {
                   { value: "10", label: "十进制", example: "10" },
                   { value: "16", label: "十六进制", example: "A" },
                 ].map((base) => (
-                  <div key={base.value} className="relative">
+                  <div key={base.value}>
                     <RadioGroupItem
                       value={base.value}
                       id={`base-${base.value}`}
@@ -213,10 +204,10 @@ export default function NumberBaseConverter() {
                     />
                     <Label
                       htmlFor={`base-${base.value}`}
-                      className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-3 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary cursor-pointer transition-all"
+                      className="flex flex-col items-center justify-center p-3 rounded-md border-2 border-muted hover:bg-accent peer-data-[state=checked]:border-primary cursor-pointer transition-all"
                     >
                       <span className="font-medium text-sm">{base.label}</span>
-                      <span className="text-xs text-muted-foreground">
+                      <span className="text-xs text-muted-foreground mt-1">
                         {base.example}
                       </span>
                     </Label>
@@ -224,17 +215,15 @@ export default function NumberBaseConverter() {
                 ))}
               </RadioGroup>
             </div>
-
-            
           </div>
 
           {/* 转换结果 */}
           {Object.keys(results).length > 0 && (
             <div className="space-y-4">
-              <div className="text-sm font-medium">转换结果</div>
+              <Label>转换结果</Label>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {Object.entries(results).map(([base, value]) => (
-                  <Card key={base} className="border">
+                  <Card key={base}>
                     <CardContent className="p-3">
                       <div className="flex items-center justify-between mb-2">
                         <div className="font-medium text-sm">
@@ -244,7 +233,7 @@ export default function NumberBaseConverter() {
                           {base}进制
                         </Badge>
                       </div>
-                      <div className="bg-muted/50 p-2 rounded mb-2">
+                      <div className="bg-muted/50 p-2 rounded-md mb-2">
                         <code className="font-mono text-xs break-all">
                           {value}
                         </code>
@@ -252,9 +241,9 @@ export default function NumberBaseConverter() {
                       <Button
                         variant="outline"
                         onClick={() => copy(value, `${base}进制`)}
-                        className="w-full gap-2 text-xs"
+                        className="w-full text-xs"
                       >
-                        <Copy className="w-3 h-3" />
+                        <Copy className="w-3 h-3 mr-1" />
                         复制
                       </Button>
                     </CardContent>
@@ -294,48 +283,30 @@ export default function NumberBaseConverter() {
             toast.success("已清空");
           }}
           size="lg"
-          className="gap-2"
         >
-          <Trash2 className="w-4 h-4" />
+          <Trash2 className="w-4 h-4 mr-2" />
           清空
         </Button>
       </div>
 
-
-
-      {/* 详细说明 */}
+      {/* 使用说明 */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Terminal className="w-5 h-5" />
-            使用说明
-          </CardTitle>
+          <CardTitle>使用说明</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <h4 className="font-semibold flex items-center gap-2">
-                <Binary className="w-4 h-4" /> 支持进制
-              </h4>
+              <h4 className="font-semibold">支持进制</h4>
               <ul className="text-sm text-muted-foreground space-y-1">
-                <li>
-                  • <strong>二进制：</strong>0, 1 (例: 1010)
-                </li>
-                <li>
-                  • <strong>八进制：</strong>0-7 (例: 12)
-                </li>
-                <li>
-                  • <strong>十进制：</strong>0-9 (例: 10)
-                </li>
-                <li>
-                  • <strong>十六进制：</strong>0-9, A-F (例: A)
-                </li>
+                <li>• <strong>二进制：</strong>0, 1 (例：1010)</li>
+                <li>• <strong>八进制：</strong>0-7 (例：12)</li>
+                <li>• <strong>十进制：</strong>0-9 (例：10)</li>
+                <li>• <strong>十六进制：</strong>0-9, A-F (例：A)</li>
               </ul>
             </div>
             <div className="space-y-2">
-              <h4 className="font-semibold flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4" /> 使用方法
-              </h4>
+              <h4 className="font-semibold">使用方法</h4>
               <ul className="text-sm text-muted-foreground space-y-1">
                 <li>1. 选择输入数值的进制类型</li>
                 <li>2. 在输入框中输入数值</li>
@@ -346,11 +317,9 @@ export default function NumberBaseConverter() {
           </div>
           <Separator />
           <Alert>
-            <Terminal className="w-4 h-4" />
             <AlertTitle>提示</AlertTitle>
             <AlertDescription>
-              十六进制中的字母不区分大小写，支持 A-F 和 a-f。数值转换范围受
-              JavaScript 安全整数限制。
+              十六进制中的字母不区分大小写，支持 A-F 和 a-f。数值转换范围受 JavaScript 安全整数限制。
             </AlertDescription>
           </Alert>
         </CardContent>

@@ -21,15 +21,7 @@ import {
 } from "@/components/ui/select";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
-import {
-  QrCode,
-  Download,
-  Trash2,
-  Globe,
-  Github,
-  MessageCircle,
-  ShoppingBag,
-} from "lucide-react";
+import { QrCode, Download, Trash2, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import { useSimpleClearForm } from "@/hooks/useClearForm";
 
@@ -84,49 +76,36 @@ export default function QrCodeGenerator() {
   ];
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-6xl space-y-8">
-      {/* 标题区域 */}
-      <Card className="border-0 shadow-none bg-transparent">
-        <CardHeader className="text-center px-0">
-          <CardTitle className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            二维码生成器
-          </CardTitle>
-          <CardDescription className="text-lg">
-            将链接或文本转换为二维码
-          </CardDescription>
-        </CardHeader>
-      </Card>
+    <div className="container mx-auto px-4 py-8 max-w-6xl space-y-6">
+      {/* 标题 */}
+      <div className="text-center mb-6">
+        <h1 className="text-3xl font-bold mb-2">二维码生成器</h1>
+        <p className="text-muted-foreground">
+          将链接或文本转换为二维码
+        </p>
+      </div>
 
-      {/* 主要工作区域 - 整合输入、控制、预览 */}
+      {/* 主要工作区 */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <QrCode className="w-5 h-5" />
-            二维码生成工作台
-          </CardTitle>
+          <CardTitle>二维码生成工具</CardTitle>
           <CardDescription>输入内容，设置大小，实时预览二维码</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          {/* 输入输出区域 */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* 输入区域 */}
             <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <Label className="text-sm font-medium">输入内容</Label>
-                <div className="flex gap-2">
-
-                </div>
-              </div>
-              <Textarea
-                value={text}
-                onChange={handleTextChange}
-                placeholder="输入链接或文本..."
-                className="min-h-32 resize-none"
-              />
-
-              {/* 大小设置 */}
               <div className="space-y-2">
-                <Label className="text-sm font-medium">二维码大小</Label>
+                <Label>输入内容</Label>
+                <Textarea
+                  value={text}
+                  onChange={handleTextChange}
+                  placeholder="输入链接或文本..."
+                  className="min-h-32 resize-none"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>二维码大小</Label>
                 <Select value={size} onValueChange={setSize}>
                   <SelectTrigger>
                     <SelectValue />
@@ -142,23 +121,21 @@ export default function QrCodeGenerator() {
               </div>
             </div>
 
-            {/* 预览区域 */}
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <Label className="text-sm font-medium">二维码预览</Label>
+                <Label>二维码预览</Label>
                 {text && !error && (
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={downloadQR}
-                    className="gap-1"
                   >
-                    <Download className="w-3 h-3" />
+                    <Download className="w-3 h-3 mr-1" />
                     下载
                   </Button>
                 )}
               </div>
-              <div className="flex justify-center items-center min-h-64 border-2 border-dashed border-muted rounded-lg">
+              <div className="flex justify-center items-center min-h-64 border-2 border-dashed border-muted rounded-md">
                 {text && !error ? (
                   <div className="space-y-4 p-4">
                     <QRCodeCanvas
@@ -166,10 +143,10 @@ export default function QrCodeGenerator() {
                       size={parseInt(size)}
                       level="M"
                       includeMargin={true}
-                      className="border border-gray-200 rounded-lg"
+                      className="border border-gray-200 rounded-md"
                     />
-                    <Button onClick={downloadQR} className="w-full gap-2">
-                      <Download className="w-4 h-4" />
+                    <Button onClick={downloadQR} className="w-full">
+                      <Download className="w-4 h-4 mr-2" />
                       下载二维码
                     </Button>
                   </div>
@@ -183,22 +160,19 @@ export default function QrCodeGenerator() {
             </div>
           </div>
 
-          {/* 操作按钮 */}
           <div className="flex flex-wrap gap-3 justify-center">
             <Button
               variant="outline"
               onClick={clearAll}
-              className="gap-2"
             >
-              <Trash2 className="w-4 h-4" />
+              <Trash2 className="w-4 h-4 mr-2" />
               清空
             </Button>
           </div>
 
-          {/* 错误信息 */}
           {error && (
             <Alert variant="destructive">
-              <QrCode className="w-4 h-4" />
+              <AlertCircle className="w-4 h-4" />
               <AlertTitle>错误</AlertTitle>
               <AlertDescription>{error}</AlertDescription>
             </Alert>
@@ -206,15 +180,10 @@ export default function QrCodeGenerator() {
         </CardContent>
       </Card>
 
-      
-
       {/* 使用说明 */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <QrCode className="w-5 h-5" />
-            使用说明
-          </CardTitle>
+          <CardTitle>使用说明</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -224,14 +193,14 @@ export default function QrCodeGenerator() {
                 <li>• 网址链接 (http/https)</li>
                 <li>• 纯文本内容</li>
                 <li>• 联系方式</li>
-                <li>• WiFi信息</li>
+                <li>• WiFi 信息</li>
               </ul>
             </div>
             <div className="space-y-2">
               <h4 className="font-semibold">使用场景</h4>
               <ul className="text-sm text-muted-foreground space-y-1">
                 <li>• 分享网站链接</li>
-                <li>• 添加WiFi网络</li>
+                <li>• 添加 WiFi 网络</li>
                 <li>• 存储联系方式</li>
                 <li>• 产品信息展示</li>
               </ul>
@@ -239,7 +208,6 @@ export default function QrCodeGenerator() {
           </div>
           <Separator />
           <Alert>
-            <QrCode className="w-4 h-4" />
             <AlertTitle>提示</AlertTitle>
             <AlertDescription>
               二维码内容越长，生成的二维码越复杂。建议保持内容简洁以提高扫描成功率。

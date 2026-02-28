@@ -179,30 +179,22 @@ export default function Geocoder() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-6xl space-y-8">
-      {/* 标题区域 */}
-      <Card className="border-0 shadow-none bg-transparent">
-        <CardHeader className="text-center px-0">
-          <CardTitle className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            地理地址查询
-          </CardTitle>
-          <CardDescription className="text-lg">
-            基于OpenStreetMap的Nominatim服务，提供地理编码和地址查询
-          </CardDescription>
-        </CardHeader>
-      </Card>
+    <div className="container mx-auto px-4 py-8 max-w-6xl space-y-6">
+      {/* 标题 */}
+      <div className="text-center mb-6">
+        <h1 className="text-3xl font-bold mb-2">地理地址查询</h1>
+        <p className="text-muted-foreground">
+          基于 OpenStreetMap 的 Nominatim 服务，提供地理编码和地址查询
+        </p>
+      </div>
 
-      {/* 地理编码工作台 */}
+      {/* 地理编码 */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Globe className="w-5 h-5" />
-            地理编码工作台
-          </CardTitle>
-          <CardDescription>地址搜索和坐标反向查询，基于OpenStreetMap数据</CardDescription>
+          <CardTitle>地理编码工具</CardTitle>
+          <CardDescription>地址搜索和坐标反向查询</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          {/* 错误信息 */}
           {error && (
             <Alert variant="destructive">
               <AlertCircle className="w-4 h-4" />
@@ -211,17 +203,10 @@ export default function Geocoder() {
             </Alert>
           )}
 
-          {/* 操作选择标签页 */}
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-2 max-w-md mx-auto">
-              <TabsTrigger value="search" className="gap-2">
-                <Search className="w-4 h-4" />
-                地址搜索
-              </TabsTrigger>
-              <TabsTrigger value="reverse" className="gap-2">
-                <Navigation className="w-4 h-4" />
-                坐标查询
-              </TabsTrigger>
+              <TabsTrigger value="search">地址搜索</TabsTrigger>
+              <TabsTrigger value="reverse">坐标查询</TabsTrigger>
             </TabsList>
 
             {/* 地址搜索 */}
@@ -232,20 +217,16 @@ export default function Geocoder() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="输入地址、地名或地标..."
-                  className="text-lg"
                 />
-                
-                
 
                 {loading && (
                   <div className="text-center py-2">
-                    <RefreshCw className="animate-spin w-4 h-4 mr-2 text-muted-foreground" />
+                    <RefreshCw className="animate-spin w-4 h-4 mr-2 text-muted-foreground inline" />
                     <span className="text-sm text-muted-foreground">搜索中...</span>
                   </div>
                 )}
               </div>
 
-              {/* 搜索结果预览 */}
               {searchResults.length > 0 && (
                 <div className="space-y-3">
                   <div className="text-sm font-medium">
@@ -253,7 +234,7 @@ export default function Geocoder() {
                   </div>
                   <div className="space-y-2 max-h-64 overflow-y-auto">
                     {searchResults.slice(0, 3).map((result, index) => (
-                      <Card key={index} className="border">
+                      <Card key={index}>
                         <CardContent className="p-3">
                           <div className="flex items-center justify-between mb-2">
                             <div className="font-medium text-sm truncate flex-1 mr-2">
@@ -271,14 +252,11 @@ export default function Geocoder() {
                               variant="outline"
                               size="sm"
                               onClick={() =>
-                                copy(
-                                  `${result.lat}, ${result.lon}`,
-                                  "坐标"
-                                )
+                                copy(`${result.lat}, ${result.lon}`, "坐标")
                               }
-                              className="text-xs gap-1"
+                              className="text-xs"
                             >
-                              <Copy className="w-3 h-3" />
+                              <Copy className="w-3 h-3 mr-1" />
                               复制
                             </Button>
                             <Button
@@ -289,9 +267,9 @@ export default function Geocoder() {
                                 setReverseLon(result.lon);
                                 setActiveTab("reverse");
                               }}
-                              className="text-xs gap-1"
+                              className="text-xs"
                             >
-                              <Navigation className="w-3 h-3" />
+                              <Navigation className="w-3 h-3 mr-1" />
                               反查
                             </Button>
                           </div>
@@ -318,7 +296,7 @@ export default function Geocoder() {
                     step="any"
                     value={reverseLat}
                     onChange={(e) => setReverseLat(e.target.value)}
-                    placeholder="例: 39.9042"
+                    placeholder="例：39.9042"
                     className="font-mono text-sm"
                   />
                 </div>
@@ -329,7 +307,7 @@ export default function Geocoder() {
                     step="any"
                     value={reverseLon}
                     onChange={(e) => setReverseLon(e.target.value)}
-                    placeholder="例: 116.4074"
+                    placeholder="例：116.4074"
                     className="font-mono text-sm"
                   />
                 </div>
@@ -337,48 +315,43 @@ export default function Geocoder() {
 
               {reverseLoading && (
                 <div className="text-center py-2">
-                  <RefreshCw className="animate-spin w-4 h-4 mr-2 text-muted-foreground" />
+                  <RefreshCw className="animate-spin w-4 h-4 mr-2 text-muted-foreground inline" />
                   <span className="text-sm text-muted-foreground">查询中...</span>
                 </div>
               )}
 
-              {/* 反向查询结果预览 */}
               {reverseResult && (
                 <div className="space-y-3">
                   <div className="text-sm font-medium">地址信息</div>
-                  <Card className="border">
+                  <Card>
                     <CardContent className="p-3">
                       <div className="text-sm mb-2">
                         {reverseResult.display_name}
                       </div>
                       <div className="text-xs text-muted-foreground mb-3">
-                        坐标: {reverseLat}, {reverseLon}
+                        坐标：{reverseLat}, {reverseLon}
                       </div>
                       <div className="flex gap-2">
                         <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() =>
-                          copy(`${reverseLat}, ${reverseLon}`, "坐标")
-                        }
-                        className="text-xs gap-1"
+                          variant="outline"
+                          size="sm"
+                          onClick={() =>
+                            copy(`${reverseLat}, ${reverseLon}`, "坐标")
+                          }
+                          className="text-xs"
                         >
-                          <Copy className="w-3 h-3" />
+                          <Copy className="w-3 h-3 mr-1" />
                           复制坐标
                         </Button>
                         <Button
                           variant="outline"
                           size="sm"
                           onClick={() =>
-                            openInMap(
-                              reverseLat,
-                              reverseLon,
-                              reverseResult.display_name
-                            )
+                            openInMap(reverseLat, reverseLon, reverseResult.display_name)
                           }
-                          className="text-xs gap-1"
+                          className="text-xs"
                         >
-                          <Map className="w-3 h-3" />
+                          <Map className="w-3 h-3 mr-1" />
                           地图
                         </Button>
                       </div>
@@ -394,36 +367,21 @@ export default function Geocoder() {
       {/* 使用说明 */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Globe className="w-5 h-5" />
-            使用说明
-          </CardTitle>
+          <CardTitle>使用说明</CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-3">
-              <h4 className="font-semibold flex items-center gap-2">
-                <Search className="w-4 h-4" /> 功能特点
-              </h4>
+              <h4 className="font-semibold">功能特点</h4>
               <ul className="text-sm text-muted-foreground space-y-1">
-                <li>
-                  • <strong>地址搜索：</strong>根据地址、地名或地标查询坐标
-                </li>
-                <li>
-                  • <strong>坐标查询：</strong>根据坐标查询详细地址信息
-                </li>
-                <li>
-                  • <strong>全球覆盖：</strong>基于OpenStreetMap的全球数据
-                </li>
-                <li>
-                  • <strong>实时结果：</strong>直接查询，无需缓存
-                </li>
+                <li>• <strong>地址搜索：</strong>根据地址、地名或地标查询坐标</li>
+                <li>• <strong>坐标查询：</strong>根据坐标查询详细地址信息</li>
+                <li>• <strong>全球覆盖：</strong>基于 OpenStreetMap 的全球数据</li>
+                <li>• <strong>实时结果：</strong>直接查询，无需缓存</li>
               </ul>
             </div>
             <div className="space-y-3">
-              <h4 className="font-semibold flex items-center gap-2">
-                <MapPin className="w-4 h-4" /> 应用场景
-              </h4>
+              <h4 className="font-semibold">应用场景</h4>
               <ul className="text-sm text-muted-foreground space-y-1">
                 <li>• 地址验证和标准化</li>
                 <li>• 地图应用开发</li>
@@ -434,10 +392,9 @@ export default function Geocoder() {
           </div>
           <Separator />
           <Alert>
-            <Globe className="w-4 h-4" />
             <AlertTitle>服务说明</AlertTitle>
             <AlertDescription>
-              Nominatim是OpenStreetMap的官方地理编码服务，免费提供全球地址查询服务。请合理使用，避免过于频繁的请求，以保护服务资源。
+              Nominatim 是 OpenStreetMap 的官方地理编码服务，免费提供全球地址查询服务。请合理使用，避免过于频繁的请求。
             </AlertDescription>
           </Alert>
         </CardContent>
