@@ -1,147 +1,109 @@
 # AGENTS.md
 
-This document provides guidelines for AI agents working on this codebase.
+AI agent guidelines for this Next.js dev tools codebase.
 
 ## Build Commands
 
 ```bash
-# Start development server
-npm run dev
-
-# Build for production
-npm run build
-
-# Start production server
-npm start
-
-# Run linting
-npm run lint
+npm run dev      # Start dev server (Turbopack)
+npm run build    # Build for production
+npm start        # Start production server
+npm run lint     # Run ESLint (fix before committing)
 ```
 
-## Code Style Guidelines
+**Note:** No test scripts configured. Use Vitest or Jest if adding tests.
+
+## Project Structure
+
+```
+src/
+├── app/              # Next.js App Router pages
+│   ├── page.js       # Home page
+│   └── [toolId]/     # Dynamic tool pages
+├── components/       # React components
+│   ├── ui/           # shadcn/ui primitives
+│   └── *.js          # Tool components
+├── hooks/            # Custom React hooks
+├── lib/              # Utilities
+└── data/             # Static data
+```
+
+## Code Style
 
 ### General Principles
-
-- Write clear, self-documenting code with Chinese comments and UI text
-- Follow React 19 and Next.js 16 App Router best practices
-- Use functional components with hooks
-- Prefer composition over abstraction
-- Keep components focused and single-responsibility
+- **Language**: Chinese for comments and UI text
+- **React**: React 19 + Next.js 16 App Router
+- **Components**: Functional with hooks only
+- **Simplicity**: Prefer simple code over complex abstractions
 
 ### File Naming
-
-- **Components**: PascalCase (e.g., `JsonConverter.jsx`, `Button.jsx`)
-- **Utils/Hooks**: camelCase (e.g., `utils.js`, `useCopyClipboard.js`)
-- **Config files**: kebab-case or lowercase (e.g., `eslint.config.mjs`, `next.config.mjs`)
-- **Data files**: camelCase (e.g., `tools.js`)
+- **Components**: PascalCase (`JsonConverter.js`)
+- **Hooks/Utils**: camelCase (`useCopyClipboard.js`)
+- **Config**: kebab-case (`eslint.config.mjs`)
 
 ### Component Structure
-
 ```javascript
-"use client"; // Required for client-side components
+"use client";
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { toast } from "sonner";
-import { IconName } from "lucide-react";
+import { Copy } from "lucide-react";
 
 export default function ComponentName() {
-  // State declarations
-  const [state, setState] = useState(initialValue);
+  const [value, setValue] = useState("");
 
-  // Derived state
-  const derivedValue = computeSomething(state);
-
-  // Event handlers
-  const handleEvent = () => {
-    // Implementation
+  const handleClick = () => {
+    try {
+      // Implementation
+      toast.success("操作成功");
+    } catch (err) {
+      toast.error("操作失败：" + err.message);
+    }
   };
 
-  // Render
-  return (
-    <div>
-      {/* JSX */}
-    </div>
-  );
+  return <div>...</div>;
 }
 ```
 
-### Import Organization
-
-1. React imports (useState, useEffect, etc.)
-2. Third-party UI components (@/components/ui/*)
-3. Custom components (@/components/*)
-4. Hooks (@/hooks/*)
-5. Icons (lucide-react)
-6. Utilities (@/lib/*)
-7. Data (@/data/*)
-
-```javascript
-import { useState, useCallback } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { toast } from "sonner";
-import { Copy, RefreshCw, AlertCircle } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { tools } from "@/data/tools";
-```
+### Import Order
+1. React imports
+2. shadcn/ui (`@/components/ui/*`)
+3. Custom components
+4. Hooks (`@/hooks/*`)
+5. Icons (`lucide-react`)
+6. Utilities (`@/lib/*`)
+7. Data (`@/data/*`)
 
 ### Path Aliases
-
-Use `@/` prefix for imports (configured in jsconfig.json):
-
+Use `@/` prefix (configured in `jsconfig.json`):
 ```javascript
 import utils from "@/lib/utils";
 import Button from "@/components/ui/button";
-import useHook from "@/hooks/useHook";
 ```
 
 ### Styling (Tailwind CSS 4)
-
-- Use utility classes for all styling
-- Use `cn()` helper for conditional classes (clsx + tailwind-merge)
-- Follow shadcn/ui color system (primary, secondary, destructive, muted, etc.)
-- Use semantic color tokens: `bg-primary`, `text-primary-foreground`, etc.
-- Responsive design with `md:`, `lg:` prefixes
+- Use utility classes only
+- Use `cn()` for conditional classes
+- Follow shadcn/ui color tokens
+- **Avoid**: gradients, blur effects, excessive animations
 
 ```javascript
 <div className={cn(
-  "p-4 rounded-lg border",
-  isActive && "bg-primary text-primary-foreground",
-  isDisabled && "opacity-50 cursor-not-allowed"
+  "p-4 rounded-md border",
+  isActive && "bg-primary text-primary-foreground"
 )}>
 ```
 
-### shadcn/ui Components
-
-- Use provided components from `@/components/ui/`
-- Leverage `class-variance-authority` for variant props
-- Component props: `variant`, `size`, `className`
-
-```javascript
-<Button variant="default" size="lg" className="w-full">
-  Click me
-</Button>
-
-<Card className="border-0 shadow-none bg-transparent">
-  <CardHeader>
-    <CardTitle>Title</CardTitle>
-  </CardHeader>
-  <CardContent>Content</CardContent>
-</Card>
-```
+### UI Design
+- ❌ Avoid: Gradient text, blur backgrounds, floating animations
+- ❌ Avoid: "工作台" or flowery titles
+- ✅ Use: Clean layouts, simple cards, direct labels
 
 ### Error Handling
-
-- Wrap async operations in try-catch
-- Use toast for user feedback
-- Display errors in Alert components
-
 ```javascript
 try {
-  const result = await someAsyncOperation();
+  await asyncOperation();
   toast.success("操作成功");
 } catch (err) {
   toast.error("操作失败：" + err.message);
@@ -149,59 +111,54 @@ try {
 ```
 
 ### State Management
-
-- Use `useState` for simple local state
-- Use custom hooks for reusable logic (`@/hooks/`)
-- Lift state up when needed
-- Use derived state instead of redundant state
-
-### Event Handling
-
-- Use arrow functions for event handlers
-- Destructure event properties explicitly
-- Handle form submissions with `e.preventDefault()`
-
-```javascript
-const handleSubmit = (e) => {
-  e.preventDefault();
-  // Process form
-};
-```
-
-### Type Safety
-
-- This is a JavaScript project (not TypeScript)
-- Use JSDoc comments for complex functions when needed
-- Propagate error messages from caught exceptions
-- Validate user input before processing
+- Use `useState` for local state
+- Use custom hooks for reusable logic
+- Prefer derived state over stored state
 
 ### Naming Conventions
+| Type | Convention | Example |
+|------|-----------|---------|
+| Variables | camelCase | `inputValue`, `isLoading` |
+| Components | PascalCase | `JsonConverter` |
+| Props | camelCase | `onValueChange` |
 
-- **Variables/Constants**: camelCase (`inputValue`, `isLoading`)
-- **Constants**: SCREAMING_SASE for config values
-- **Components**: PascalCase (`JsonConverter`)
-- **Props**: camelCase, descriptive (`onValueChange`, `className`)
-- **CSS Classes**: kebab-case in HTML, utility classes in code
-
-### UI/UX Guidelines
-
-- Use Lucide icons for visual elements
-- Provide loading states for async operations
-- Use toast notifications for feedback
-- Include error states with helpful messages
-- Support keyboard navigation
-- Ensure responsive design for mobile/desktop
+### React Hooks
+```javascript
+export function useCopyClipboard() {
+  const [copied, setCopied] = useState(false);
+  
+  const copy = useCallback((text) => {
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    toast.success("已复制");
+    setTimeout(() => setCopied(false), 2000);
+  }, []);
+  
+  return { copy, copied };
+}
+```
 
 ### Next.js Specifics
+- Server components by default
+- Add `"use client"` for client interactivity
+- Use App Router structure (`src/app/`)
 
-- Server components by default, add `"use client"` for client interactivity
-- Use App Router file structure (`src/app/`)
-- Place static UI components in `src/components/`
-- Use `src/data/` for configuration and tool definitions
-- Place reusable logic in `src/lib/` and `src/hooks/`
-
-### Code Formatting
-
+### Code Quality
 - Run `npm run lint` before committing
-- ESLint config extends `eslint-config-next/core-web-vitals`
-- Ignore `.next/`, `build/`, `out/` directories
+- Fix all ESLint errors
+- Keep components under 300 lines
+
+### shadcn/ui Usage
+```javascript
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { toast } from "sonner";
+
+<Button variant="default" size="lg">Click</Button>
+<Card><CardHeader><CardTitle>Title</CardTitle></CardHeader></Card>
+```
+
+### Accessibility
+- Use semantic HTML
+- Include `aria-label` for icon buttons
+- Support keyboard navigation
